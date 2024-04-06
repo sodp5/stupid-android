@@ -4,4 +4,6 @@
     <string name="main_tab_home">홈</string>
     <string name="main_tab_post">물어보기</string>
     <string name="main_tab_mypage">마이페이지</string>
+
+    <string name="post_title">물어보기</string>
 </resources>
