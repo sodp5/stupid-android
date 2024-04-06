@@ -24,8 +24,8 @@ import kotlin.math.roundToInt
 fun SwipableCard(
     onSwipeLeft: () -> Unit = {},
     onSwipeRight: () -> Unit = {},
-    swipeThreshold: Float = 600f,
-    sensitivityFactor: Float = 3f,
+    swipeThreshold: Float = 500f,
+    sensitivityFactor: Float = 4f,
     content: @Composable () -> Unit
 ) {
     var offset by remember { mutableStateOf(0f) }
@@ -59,10 +59,16 @@ fun SwipableCard(
                 offset += (dragAmount / density) * sensitivityFactor
                 when {
                     offset > swipeThreshold -> {
+                        for(i in 0..100){
+                            offset += 0.5f
+                        }
                         dismissRight = true
                     }
 
                     offset < -swipeThreshold -> {
+                        for(i in 0..100){
+                            offset -= 0.5f
+                        }
                         dismissLeft = true
                     }
                 }
