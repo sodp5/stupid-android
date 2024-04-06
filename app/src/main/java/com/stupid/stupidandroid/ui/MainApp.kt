@@ -125,6 +125,7 @@ fun MainBottomBar(
                     onNavigateToDestination(destination)
                 },
                 icon = destination.unselectedIcon,
+                label = { destination.label(selected) },
                 selectedIcon = destination.selectedIcon
             )
         }

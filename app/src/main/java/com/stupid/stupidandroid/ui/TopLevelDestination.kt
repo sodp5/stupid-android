@@ -2,8 +2,10 @@ package com.stupid.stupidandroid.ui
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.design.component.StableImage
@@ -15,11 +17,12 @@ import com.stupid.stupidandroid.ui.design.icon.iconpack.IcPostUnselected
 import com.stupid.stupidandroid.ui.navigation.homeNavigationRoute
 import com.stupid.stupidandroid.ui.navigation.myPageNavigationRoute
 import com.stupid.stupidandroid.ui.navigation.postNavigationRoute
+import com.stupid.stupidandroid.ui.theme.Typography
 
 enum class TopLevelDestination(
     val selectedIcon: @Composable () -> Unit,
     val unselectedIcon: @Composable () -> Unit,
-    val iconTextId: Int,
+    val label: @Composable (Boolean) -> Unit,
     val route: String
 ) {
     POST(
@@ -35,7 +38,16 @@ enum class TopLevelDestination(
                 contentDescription = null
             )
         },
-        iconTextId = R.string.main_tab_post,
+        label = { selected ->
+            Text(
+                text = stringResource(id = R.string.main_tab_post),
+                style = if (selected) {
+                    Typography.XxSmallBold12
+                } else {
+                    Typography.XxSmallMedium12
+                },
+            )
+        },
         route = postNavigationRoute
     ),
     HOME(
@@ -51,7 +63,16 @@ enum class TopLevelDestination(
                 contentDescription = null
             )
         },
-        iconTextId = R.string.main_tab_home,
+        label = { selected ->
+            Text(
+                text = stringResource(id = R.string.main_tab_home),
+                style = if (selected) {
+                    Typography.XxSmallBold12
+                } else {
+                    Typography.XxSmallMedium12
+                },
+            )
+        },
         route = homeNavigationRoute
     ),
     MYPAGE(
@@ -69,7 +90,16 @@ enum class TopLevelDestination(
                 description = null
             )
         },
-        iconTextId = R.string.main_tab_mypage,
+        label = { selected ->
+            Text(
+                text = stringResource(id = R.string.main_tab_mypage),
+                style = if (selected) {
+                    Typography.XxSmallBold12
+                } else {
+                    Typography.XxSmallMedium12
+                },
+            )
+        },
         route = myPageNavigationRoute
     ),
 }
