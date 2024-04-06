@@ -22,10 +22,10 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -51,12 +51,16 @@ import java.io.InputStream
 
 @Composable
 fun PostScreen(
+    onNavigateHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        val inputStream: InputStream = context.contentResolver.openInputStream(it!!)!!
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        val inputStream: InputStream = context.contentResolver
+            .openInputStream(uri ?: return@rememberLauncherForActivityResult)
+            ?: return@rememberLauncherForActivityResult
+
         val tempFile = File.createTempFile("temp", ".png")
         tempFile.deleteOnExit()
 
@@ -70,7 +74,7 @@ fun PostScreen(
 
         inputStream.close()
 
-        viewModel.setImageUri(it, tempFile)
+        viewModel.setImageUri(uri, tempFile)
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -83,6 +87,12 @@ fun PostScreen(
     SideEffect {
         if (keyboardState && uiState.postUiModel !is PostUiModel.Second) {
             coroutineScope.launch { scrollState.scrollTo(Int.MAX_VALUE) }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateHomeEvent.collect {
+            onNavigateHome()
         }
     }
 

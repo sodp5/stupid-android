@@ -15,13 +15,14 @@ fun NavController.navigateToMain(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.mainScreen(
+    onNavigateHome: () -> Unit,
     onShowEventScreen : (Choice) -> Unit,
 ) {
     navigation(
         startDestination = homeNavigationRoute,
         route = mainNavigationRoute
     ) {
-        postScreen()
+        postScreen(onNavigateHome = onNavigateHome)
         homeScreen(onShowEventScreen = onShowEventScreen)
         myPageScreen()
     }
