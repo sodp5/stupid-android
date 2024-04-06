@@ -151,6 +151,7 @@ fun HomeScreen(
                     it.id
                 }) {
                     SwipableCard(
+                        modifier = Modifier.fillParentMaxHeight(),
                         swipeEnabled = homeUiState.postList.first().id == it.id,
                         onSwipeLeft = {
                             onSwipeLeft(it)

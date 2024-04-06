@@ -2,6 +2,7 @@ package com.stupid.stupidandroid.ui.screen.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,8 +39,8 @@ fun PostCard(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
-            .padding(bottom = 32.dp)
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.Center,
     ) {
         PostCard(
             modifier = Modifier.fillMaxWidth(),

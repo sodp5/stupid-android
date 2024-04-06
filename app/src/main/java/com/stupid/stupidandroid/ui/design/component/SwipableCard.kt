@@ -23,6 +23,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SwipableCard(
     swipeEnabled: Boolean,
+    modifier: Modifier = Modifier,
     onSwipeLeft: () -> Unit = {},
     onSwipeRight: () -> Unit = {},
     swipeThreshold: Float = 500f,
@@ -50,7 +51,7 @@ fun SwipableCard(
         }
     }
 
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .offset { IntOffset(offset.roundToInt(), 0) }
         .then(
             if (swipeEnabled) {
