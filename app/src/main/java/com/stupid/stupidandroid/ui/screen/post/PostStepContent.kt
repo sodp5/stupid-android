@@ -329,6 +329,7 @@ private fun PostPrepared(
 ) {
     Box(
         modifier = modifier
+            .height(400.dp)
             .clip(RoundedCornerShape(8.dp)),
     ) {
         AsyncImage(
