@@ -10,8 +10,8 @@ import com.stupid.stupidandroid.ui.navigation.mainScreen
 
 @Composable
 fun MainNavHost(
-    modifier : Modifier = Modifier,
     navController: NavHostController,
+    modifier : Modifier = Modifier
 ) {
     NavHost(
         modifier = modifier,
