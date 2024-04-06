@@ -101,7 +101,7 @@ private fun Modifier.drawProgressRail(currentStep: PostProgressStep): Modifier {
         val sizeUnit = size.width / 6
 
         val coloredRectWidth = when (currentStep) {
-            PostProgressStep.First -> sizeUnit
+            PostProgressStep.First -> sizeUnit + 6.dp.toPx()
             PostProgressStep.Second -> sizeUnit * 3
             PostProgressStep.Third -> sizeUnit * 5
             PostProgressStep.Fourth,

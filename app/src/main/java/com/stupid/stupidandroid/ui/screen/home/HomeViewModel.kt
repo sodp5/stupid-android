@@ -6,7 +6,9 @@ import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 import com.stupid.stupidandroid.usecase.GetPostListUseCase
 import com.stupid.stupidandroid.usecase.VoteUseCase
+import com.stupid.stupidandroid.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +27,9 @@ class HomeViewModel @Inject constructor(
     private val getPostListUseCase: GetPostListUseCase,
     private val voteUseCase: VoteUseCase,
 ) : ViewModel() {
+    private val catchingViewModelScope = viewModelScope + CoroutineExceptionHandler { coroutineContext, throwable ->
+        _showErrorToast.tryEmit(Event(Unit))
+    }
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -31,12 +37,15 @@ class HomeViewModel @Inject constructor(
     private val _event = MutableSharedFlow<Choice>()
     val event: SharedFlow<Choice> = _event.asSharedFlow()
 
+    private val _showErrorToast = MutableSharedFlow<Event<Unit>>(extraBufferCapacity = 1)
+    val showErrorToast: SharedFlow<Event<Unit>> = _showErrorToast.asSharedFlow()
+
     init {
         loadPostList()
     }
 
     fun loadPostList() {
-        viewModelScope.launch {
+        catchingViewModelScope.launch {
             _homeUiState.emit(
                 homeUiState.value.copy(
                     isLoading = true
@@ -61,8 +70,27 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onVoteCard(isBuyIt: Boolean) {
+        catchingViewModelScope.launch {
+            val item = homeUiState.value.postList.first()
+
+            launch {
+                voteUseCase(item.id.toLong(), isBuyIt)
+            }
+
+            _event.emit(
+                if (isBuyIt) Choice.BuyIt(item) else Choice.Stupid(item = item)
+            )
+            delay(500)
+            _homeUiState.update { state ->
+                state.copy(postList = homeUiState.value.postList.filterNot { it.id == item.id })
+            }
+        }
+    }
 
     fun swipePostCard(item: RemotePost, isBuyIt: Boolean) {
+
+
         viewModelScope.launch {
             launch {
                 voteUseCase(item.id.toLong(), isBuyIt)
@@ -71,7 +99,7 @@ class HomeViewModel @Inject constructor(
             _event.emit(
                 if (isBuyIt) Choice.BuyIt(item) else Choice.Stupid(item = item)
             )
-            delay(300)
+            delay(500)
             _homeUiState.update { state ->
                 state.copy(postList = homeUiState.value.postList.filterNot { it.id == item.id })
             }

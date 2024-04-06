@@ -1,10 +1,13 @@
 package com.stupid.stupidandroid.ui.screen.home
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,6 +40,8 @@ import com.stupid.stupidandroid.ui.design.component.StableImage
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
 import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 import com.stupid.stupidandroid.ui.theme.Typography
+import com.stupid.stupidandroid.util.collectOnce
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -44,6 +50,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.homeUiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
@@ -64,14 +71,28 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect {
-            onShowEventScreen(it)
+        launch {
+            viewModel.event.collect {
+                onShowEventScreen(it)
+            }
+        }
+
+        launch {
+            viewModel.showErrorToast.collectOnce {
+                Toast.makeText(context, "일시적인 오류입니다!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     HomeScreen(
         modifier = modifier.fillMaxSize(),
         homeUiState = uiState,
+        onLeftClick = {
+            viewModel.onVoteCard(true)
+        },
+        onRightClick = {
+            viewModel.onVoteCard(false)
+        },
         onSwipeLeft = {
             viewModel.swipePostCard(it, true)
         },
@@ -88,6 +109,8 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
+    onLeftClick: () -> Unit,
+    onRightClick: () -> Unit,
     onSwipeLeft: (RemotePost) -> Unit,
     onSwipeRight: (RemotePost) -> Unit,
     listState: LazyListState,
@@ -128,12 +151,13 @@ fun HomeScreen(
                     it.id
                 }) {
                     SwipableCard(
+                        swipeEnabled = homeUiState.postList.first().id == it.id,
                         onSwipeLeft = {
                             onSwipeLeft(it)
                         },
                         onSwipeRight = {
                             onSwipeRight(it)
-                        }
+                        },
                     ) {
                         PostCard(it)
                     }
@@ -141,12 +165,24 @@ fun HomeScreen(
             }
         }
         StableImage(
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable(
+                    onClick = onLeftClick,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
             drawableResId = R.drawable.img_buy,
             description = null
         )
         StableImage(
-            modifier = Modifier.align(Alignment.CenterEnd),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable(
+                    onClick = onRightClick,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
             drawableResId = R.drawable.img_stop,
             description = null
         )

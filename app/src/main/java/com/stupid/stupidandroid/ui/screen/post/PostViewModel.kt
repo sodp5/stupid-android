@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stupid.stupidandroid.usecase.CreatePostUseCase
 import com.stupid.stupidandroid.usecase.Post
+import com.stupid.stupidandroid.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,8 +42,8 @@ class PostViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<PostUiState> = MutableStateFlow(PostUiState(PostUiModel.First(), false))
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
 
-    private val _navigateHomeEvent: MutableSharedFlow<Unit> = MutableSharedFlow()
-    val navigateHomeEvent: SharedFlow<Unit> = _navigateHomeEvent.asSharedFlow()
+    private val _navigateHomeEvent: MutableSharedFlow<Event<Unit>> = MutableSharedFlow()
+    val navigateHomeEvent: SharedFlow<Event<Unit>> = _navigateHomeEvent.asSharedFlow()
 
     private var stateSnapshot = PostUiStateSnapshot()
 
@@ -129,7 +130,11 @@ class PostViewModel @Inject constructor(
                         stateSnapshot.first?.file!!,
                         stateSnapshot.toPost(),
                     )
-                    _navigateHomeEvent.emit(Unit)
+                    _uiState.update {
+                        PostUiState(PostUiModel.First(), false)
+                    }
+                    stateSnapshot = PostUiStateSnapshot()
+                    _navigateHomeEvent.emit(Event(Unit))
                 }.invokeOnCompletion {
                     _uiState.update {
                         it.copy(isLoading = false)

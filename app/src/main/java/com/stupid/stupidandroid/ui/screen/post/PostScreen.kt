@@ -101,6 +101,7 @@ fun PostScreen(
             modifier = modifier.fillMaxSize(),
             postUiModel = uiState.postUiModel,
             scrollState = scrollState,
+            onBackClick = onNavigateHome,
             onNextStepClick = viewModel::goNextStep,
             onExplainUpdate = viewModel::setExplain,
             onReasonChange = viewModel::setReason,
@@ -131,6 +132,7 @@ fun PostScreen(
     onDoubtReasonChange: (String) -> Unit,
     onDoubt2ReasonChange: (String) -> Unit,
     onNextStepClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -139,7 +141,9 @@ fun PostScreen(
             .background(Color.White)
     ) {
         Column {
-            PostTitleBar()
+            PostTitleBar(
+                onBackClick = onBackClick,
+            )
 
             Column(
                 modifier = Modifier
@@ -252,6 +256,7 @@ private fun PostScreenPreview() {
         onReasonChange = { _, _ -> },
         onDoubtReasonChange = {},
         onDoubt2ReasonChange = {},
+        onBackClick = {},
     )
 }
 
