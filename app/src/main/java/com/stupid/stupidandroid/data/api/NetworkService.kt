@@ -1,5 +1,6 @@
 package com.stupid.stupidandroid.data.api
 
+import com.stupid.stupidandroid.data.model.RemoteMyPage
 import com.stupid.stupidandroid.data.model.RemotePost
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
