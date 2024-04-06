@@ -3,6 +3,8 @@ package com.stupid.stupidandroid.ui.screen.post
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +35,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
+import kotlinx.collections.immutable.persistentListOf
 
 private const val ExplainLengthThreshold = 17
 
@@ -44,6 +51,7 @@ fun PostStepContent(
     uiState: PostUiState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
+    onReasonChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -66,6 +74,10 @@ fun PostStepContent(
 //        PostProgressStep.Fourth -> PostPurchaseDoubt()
 //        PostProgressStep.FourthFinally -> PostPurchaseDoubtFinally()
 //        PostProgressStep.Finished -> PostPrepared()
+        is PostUiState.Third -> PostReasonChoice(
+            currentReason = uiState.currentReason,
+            onReasonChange = onReasonChange,
+        )
     }
 }
 
@@ -141,7 +153,7 @@ private fun PostItemExplain(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        BasicTextField(
+        PostInputField(
             modifier = Modifier
                 .focusRequester(focusRequest)
                 .fillMaxWidth()
@@ -150,8 +162,8 @@ private fun PostItemExplain(
                     shape = RoundedCornerShape(8.dp),
                 )
                 .padding(horizontal = 14.dp, vertical = 12.dp),
-            value = explain,
-            onValueChange = { newValue ->
+            text = explain,
+            onChange = { newValue ->
                 val limitedString = if (newValue.length > ExplainLengthThreshold) {
                     newValue.substring(0, ExplainLengthThreshold)
                 } else {
@@ -164,27 +176,8 @@ private fun PostItemExplain(
                 .copy(color = Color.Black),
             singleLine = true,
             maxLines = 1,
-            decorationBox = { innerTextField ->
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        if (explain.isEmpty()) {
-                            Text(
-                                text = stringResource(id = R.string.post_step_2_explain_placeholder),
-                                style = Typography.XSmallMedium14,
-                                color = Color(0xFF989BA2),
-                            )
-                        }
-
-                        innerTextField()
-                    }
-
-                    Text(
-                        text = "${explain.length}/$ExplainLengthThreshold",
-                        style = Typography.XSmallMedium14,
-                        color = Color(0xFF989BA2),
-                    )
-                }
-            }
+            placeHolder = stringResource(id = R.string.post_step_2_explain_placeholder),
+            maxLength = ExplainLengthThreshold
         )
 
         SelectedItemImage(
@@ -213,8 +206,77 @@ private fun SelectedItemImage(
 }
 
 @Composable
-private fun PostPurchaseChoice() {
+private fun PostReasonChoice(
+    currentReason: String?,
+    onReasonChange: (String) -> Unit,
+) {
+    val choicesSuggestionsRes = remember {
+        persistentListOf(
+            R.string.post_step_3_chocies_1,
+            R.string.post_step_3_chocies_2,
+            R.string.post_step_3_chocies_3,
+        )
+    }
 
+    val (customChoice, customChoiceChange) = remember {
+        mutableStateOf("")
+    }
+
+    val reasons = choicesSuggestionsRes.map { stringResource(id = it) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        reasons.forEach { reason ->
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = if (reason == currentReason) Color(0xFF13C55A) else Color(0xFFE9E9E9),
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onReasonChange(reason) }
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                text = reason,
+                style = Typography.XSmallMedium14,
+                color = if (reason == currentReason) Color(0xFFFFFFFF) else Color(0xFF333333),
+            )
+        }
+
+        val interactionSource = remember { MutableInteractionSource() }
+        val isPressed: Boolean by interactionSource.collectIsPressedAsState()
+
+        LaunchedEffect(isPressed) {
+            if (isPressed) {
+                onReasonChange(customChoice)
+            }
+        }
+
+        PostInputField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = if (currentReason != null && !reasons.contains(currentReason)) Color(0xFFD0F3DE) else Color(0xFFE9E9E9),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .padding(horizontal = 14.dp, vertical = 12.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            text = customChoice,
+            onChange = {
+                onReasonChange(it)
+                customChoiceChange(it)
+            },
+            textStyle = Typography.XSmallMedium14
+                .copy(color = Color(0xFF333333)),
+            interactionSource = interactionSource,
+            singleLine = true,
+            maxLines = 1,
+            placeHolder = stringResource(id = R.string.post_step_3_custom_placeholder),
+            maxLength = 29,
+            decorationBottomPadding = 28.dp,
+        )
+    }
 }
 
 @Composable
@@ -232,6 +294,64 @@ private fun PostPrepared() {
 
 }
 
+@Composable
+private fun PostInputField(
+    text: String,
+    onChange: (String) -> Unit,
+    placeHolder: String,
+    maxLength: Int,
+    textStyle: TextStyle,
+    singleLine: Boolean,
+    maxLines: Int,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    decorationBottomPadding: Dp = 0.dp,
+) {
+    BasicTextField(
+        modifier = modifier,
+        value = text,
+        onValueChange = { newValue ->
+            val limitedString = if (newValue.length > maxLength) {
+                newValue.substring(0, maxLength)
+            } else {
+                newValue
+            }
+
+            onChange(limitedString)
+        },
+        textStyle = textStyle,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        interactionSource = interactionSource,
+        decorationBox = { innerTextField ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(bottom = decorationBottomPadding)
+                ) {
+                    if (text.isEmpty()) {
+                        Text(
+                            text = placeHolder,
+                            style = Typography.XSmallMedium14,
+                            color = Color(0xFF989BA2),
+                        )
+                    }
+
+                    innerTextField()
+                }
+
+                Text(
+                    modifier = Modifier.align(Alignment.Bottom),
+                    text = "${text.length}/$maxLength",
+                    style = Typography.XSmallMedium14,
+                    color = Color(0xFF989BA2),
+                )
+            }
+        }
+    )
+}
+
 @Preview
 @Composable
 private fun PostStepContentPreview() {
@@ -240,6 +360,7 @@ private fun PostStepContentPreview() {
             uiState = PostUiState.First(),
             onImageUploadClick = {},
             onExplainUpdate = {},
+            onReasonChange = {},
             modifier = Modifier.fillMaxSize(),
         )
     }

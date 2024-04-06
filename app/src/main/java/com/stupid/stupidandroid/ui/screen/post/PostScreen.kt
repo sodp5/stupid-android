@@ -44,6 +44,7 @@ fun PostScreen(
         uiState = uiState,
         onNextStepClick = viewModel::goNextStep,
         onExplainUpdate = viewModel::setExplain,
+        onReasonChange = viewModel::setReason,
         onImageUploadClick = {
             val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
@@ -57,6 +58,7 @@ fun PostScreen(
     uiState: PostUiState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
+    onReasonChange: (String) -> Unit,
     onNextStepClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,6 +95,7 @@ fun PostScreen(
                     uiState = uiState,
                     onImageUploadClick = onImageUploadClick,
                     onExplainUpdate = onExplainUpdate,
+                    onReasonChange = onReasonChange,
                 )
             }
         }
@@ -122,7 +125,7 @@ private fun NextButton(
                 onClick = onClick,
             )
             .background(
-                color = if (enabled) Color(0xFF333333) else Color(0xFFADAFB5),
+                color = if (enabled) Color(0xFF242424) else Color(0xFFADAFB5),
                 shape = RoundedCornerShape(15.dp)
             ),
         contentAlignment = Alignment.Center,
@@ -145,5 +148,6 @@ private fun PostScreenPreview() {
         onNextStepClick = {},
         onImageUploadClick = {},
         onExplainUpdate = {},
+        onReasonChange = {},
     )
 }

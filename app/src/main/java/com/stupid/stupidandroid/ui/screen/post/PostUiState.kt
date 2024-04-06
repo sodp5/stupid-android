@@ -20,4 +20,9 @@ sealed interface PostUiState {
         override val step: PostProgressStep = PostProgressStep.Second
         override val canNext: Boolean = IntRange(1, 17).contains(explain.length)
     }
+
+    data class Third(val currentReason: String?) : PostUiState {
+        override val step: PostProgressStep = PostProgressStep.Third
+        override val canNext: Boolean = currentReason?.isNotEmpty() == true
+    }
 }

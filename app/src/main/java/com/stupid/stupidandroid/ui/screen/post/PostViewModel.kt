@@ -25,10 +25,17 @@ class PostViewModel @Inject constructor() : ViewModel() {
         _uiState.value = state.copy(explain = explain)
     }
 
+    fun setReason(reason: String) {
+        val state = (uiState.value as? PostUiState.Third) ?: return
+
+        _uiState.value = state.copy(currentReason = reason)
+    }
+
     fun goNextStep() {
         _uiState.value = when (val state = uiState.value) {
             is PostUiState.First -> PostUiState.Second(state.requireUri, "")
-            is PostUiState.Second -> PostUiState.Second(state.uri, "")
+            is PostUiState.Second -> PostUiState.Third(null)
+            is PostUiState.Third -> PostUiState.Third(null)
         }
     }
 }

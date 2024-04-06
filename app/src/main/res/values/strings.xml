@@ -17,4 +17,9 @@
     <string name="post_step_1_content_description">이미지를 업로드해주세요.</string>
 
     <string name="post_step_2_explain_placeholder">사고싶은 물품명을 입력해주세요.</string>
+
+    <string name="post_step_3_chocies_1">아니 너무 예쁘잖아요..</string>
+    <string name="post_step_3_chocies_2">나중에 쓸 일이 생길지도 몰라요</string>
+    <string name="post_step_3_chocies_3">진짜 꼭 필요한거에요ㅠ</string>
+    <string name="post_step_3_custom_placeholder">직접 입력</string>
 </resources>
