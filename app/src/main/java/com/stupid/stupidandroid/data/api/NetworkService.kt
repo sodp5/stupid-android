@@ -1,6 +1,5 @@
 package com.stupid.stupidandroid.data.api
 
-import com.stupid.stupidandroid.data.model.RemoteMyPage
 import com.stupid.stupidandroid.data.model.RemotePost
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -20,7 +19,7 @@ interface NetworkService {
         @Query("memberId") memberId : Long
     ): Response<List<RemotePost>>
 
-    @GET(value = "/oauth/kakao/login/app")
+    @GET(value = "/api/v1/oauth/kakao/login/app")
     suspend fun registerKakaoToken(
         @Query("token") token : String
     ) : Response<Unit>

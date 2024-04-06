@@ -22,15 +22,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RowScope.MainNavigationBarItem(
-    selected : Boolean,
-    onClick : () -> Unit,
-    icon : @Composable () -> Unit,
+    selected: Boolean,
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
+    icon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     selectedIcon: @Composable () -> Unit = icon,
-){
+) {
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
+        label = label,
         icon = if (selected) selectedIcon else icon,
         modifier = modifier,
         colors = NavigationBarItemDefaults.colors(
