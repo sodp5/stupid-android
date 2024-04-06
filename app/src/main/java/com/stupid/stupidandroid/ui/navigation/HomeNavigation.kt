@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.stupid.stupidandroid.ui.screen.home.Choice
 import com.stupid.stupidandroid.ui.screen.home.HomeScreen
 
 
@@ -14,10 +15,14 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 }
 
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(
+    onShowEventScreen : (Choice) -> Unit,
+) {
     composable(
         route = homeNavigationRoute
     ) {
-        HomeScreen()
+        HomeScreen(
+            onShowEventScreen = onShowEventScreen
+        )
     }
 }

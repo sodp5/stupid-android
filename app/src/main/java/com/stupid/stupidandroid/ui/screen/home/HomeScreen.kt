@@ -1,34 +1,39 @@
 package com.stupid.stupidandroid.ui.screen.home
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
 
 @Composable
 fun HomeScreen(
+    onShowEventScreen : (Choice) -> Unit,
     modifier : Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    var list by remember {
-        mutableStateOf(listOf(1,2,3,4,5))
+    val list by viewModel.list.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect {
+            onShowEventScreen(it)
+        }
     }
 
     HomeScreen(
         modifier = modifier.fillMaxSize(),
         cardList = list,
-        onSwipeCard = {
-            if(list.isNotEmpty()) list = list.drop(1)
+        onSwipeLeft = {
+            viewModel.buyItem(it)
+        },
+        onSwipeRight = {
+            viewModel.stopIt(it)
         }
     )
 }
@@ -36,26 +41,31 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    cardList : List<Int>,
-    onSwipeCard : () -> Unit
+    cardList : List<ItemModel>,
+    onSwipeLeft : (ItemModel) -> Unit,
+    onSwipeRight : (ItemModel) -> Unit
 ){
-    //test
-    Box(modifier = modifier) {
-        if(cardList.isNotEmpty()){
-            SwipableCard(
-                onSwipeLeft = onSwipeCard,
-                onSwipeRight = onSwipeCard
-            ) {
-                Card(
-                    modifier = Modifier.fillMaxSize().padding(vertical = 40.dp, horizontal = 20.dp)
+    Column(
+        modifier = modifier
+    ) {
+        LazyColumn(
+            modifier = modifier
+        ) {
+            items(cardList, key = {
+                it.id
+            }){
+                SwipableCard(
+                    onSwipeLeft = {
+                        onSwipeLeft(it)
+                    },
+                    onSwipeRight = {
+                        onSwipeRight(it)
+                    }
                 ) {
-                    Text(
-                        cardList.first().toString()
-                    )
+                    ItemCard(it)
                 }
             }
-        }else {
-            Text("카드가 더 이상 없습니다.")
         }
     }
+
 }
