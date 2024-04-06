@@ -119,7 +119,8 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = listState,
-                flingBehavior = snapFlingBehavior
+                flingBehavior = snapFlingBehavior,
+                userScrollEnabled = false,
             ) {
                 items(homeUiState.postList, key = {
                     it.id
