@@ -1,6 +1,7 @@
 package com.stupid.stupidandroid.ui.design.icon
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.stupid.stupidandroid.ui.design.icon.iconpack.IcKakao
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcHomeSelected
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcHomeUnselected
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcPostSelected
@@ -16,8 +17,7 @@ public val IconPack.Icons: ____KtList<ImageVector>
     if (__Icons != null) {
       return __Icons!!
     }
-    __Icons = listOf(IcHomeSelected, IcPostUnselected,
+    __Icons= listOf(IcKakao,IcHomeSelected, IcPostUnselected,
       IcHomeUnselected, IcPostSelected)
     return __Icons!!
   }
-
