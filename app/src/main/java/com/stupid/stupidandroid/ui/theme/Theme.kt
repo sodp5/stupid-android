@@ -64,7 +64,6 @@ fun StupidAndroidTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }
