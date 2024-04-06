@@ -128,12 +128,13 @@ fun HomeScreen(
                     it.id
                 }) {
                     SwipableCard(
+                        swipeEnabled = homeUiState.postList.first().id == it.id,
                         onSwipeLeft = {
                             onSwipeLeft(it)
                         },
                         onSwipeRight = {
                             onSwipeRight(it)
-                        }
+                        },
                     ) {
                         PostCard(it)
                     }
