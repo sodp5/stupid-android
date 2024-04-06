@@ -59,7 +59,7 @@ fun PostScreen(
             Text(
                 text = currentStep.asExplain(),
                 style = Typography.XSmallSemiBold16,
-                color = Color(0xFF607864)
+                color = Color(0xFF607864),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -116,6 +116,6 @@ private fun NextButton(
 private fun PostScreenPreview() {
     PostScreen(
         modifier = Modifier.fillMaxSize(),
-        currentStep = PostProgressStep.Second
+        currentStep = PostProgressStep.Second,
     )
 }

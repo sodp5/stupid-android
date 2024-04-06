@@ -5,12 +5,25 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
 import com.stupid.stupidandroid.R
 
-enum class PostProgressStep {
-    First,
-    Second,
-    Third,
-    Fourth,
-    Finished,
+enum class PostProgressStep(val isShowingStepInProgress: Boolean) {
+    First(
+        isShowingStepInProgress = true,
+    ),
+    Second(
+        isShowingStepInProgress = true,
+    ),
+    Third(
+        isShowingStepInProgress = true,
+    ),
+    Fourth(
+        isShowingStepInProgress = true,
+    ),
+    FourthFinally(
+        isShowingStepInProgress = false,
+    ),
+    Finished(
+        isShowingStepInProgress = false,
+    ),
 }
 
 fun PostProgressStep.asNumber(): String {
@@ -19,8 +32,10 @@ fun PostProgressStep.asNumber(): String {
         PostProgressStep.Second,
         PostProgressStep.Third,
         PostProgressStep.Fourth -> (ordinal + 1).toString()
+        PostProgressStep.FourthFinally -> ordinal.toString()
 
         PostProgressStep.Finished -> error("$this cannot convert number")
+
     }
 }
 
@@ -32,6 +47,7 @@ fun PostProgressStep.asExplain(): String {
         PostProgressStep.Second -> R.string.post_explain_2
         PostProgressStep.Third -> R.string.post_explain_3
         PostProgressStep.Fourth -> R.string.post_explain_4
+        PostProgressStep.FourthFinally -> R.string.post_explain_finally_4
 
         PostProgressStep.Finished -> error("$this cannot convert explain")
     }

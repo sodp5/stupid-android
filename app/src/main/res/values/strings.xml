@@ -10,5 +10,6 @@
     <string name="post_explain_2">2. 이게 무엇인가요?</string>
     <string name="post_explain_3">3. 이게 왜 사고싶어요?</string>
     <string name="post_explain_4">4. 이미 있는거 아니에요?</string>
+    <string name="post_explain_finally_4">4. 진짜진짜 필요한거 맞아요?</string>
     <string name="post_next">다음</string>
 </resources>

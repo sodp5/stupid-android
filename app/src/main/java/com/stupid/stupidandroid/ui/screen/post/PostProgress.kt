@@ -37,7 +37,7 @@ fun PostProgress(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         PostProgressStep.entries
-            .filterNot { it == PostProgressStep.Finished }
+            .filter { it.isShowingStepInProgress }
             .forEach { step ->
                 when {
                     step < currentStep -> DoneStep()
@@ -105,6 +105,7 @@ private fun Modifier.drawProgressRail(currentStep: PostProgressStep): Modifier {
             PostProgressStep.Second -> sizeUnit * 3
             PostProgressStep.Third -> sizeUnit * 5
             PostProgressStep.Fourth,
+            PostProgressStep.FourthFinally,
             PostProgressStep.Finished -> size.width
         }
 
