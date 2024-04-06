@@ -28,7 +28,8 @@ fun PostScreen(
     viewModel: PostViewModel = hiltViewModel()
 ) {
     PostScreen(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        currentStep = PostProgressStep.Second,
     )
 }
 
