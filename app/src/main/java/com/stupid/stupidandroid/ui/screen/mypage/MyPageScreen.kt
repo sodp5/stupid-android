@@ -1,7 +1,10 @@
 package com.stupid.stupidandroid.ui.screen.mypage
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,107 +20,172 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.stupid.stupidandroid.R
+import com.stupid.stupidandroid.data.model.RemoteMyPage
 import com.stupid.stupidandroid.ui.design.component.Badge
 import com.stupid.stupidandroid.ui.design.component.RewardBadge
+import com.stupid.stupidandroid.ui.design.component.StableImage
 import com.stupid.stupidandroid.ui.theme.Typography
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyPageScreen(
     modifier: Modifier = Modifier,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
+    val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
+    val myPage by viewModel.myPage.collectAsStateWithLifecycle()
+    val badge by viewModel.badge.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
     MyPageScreen(
-        profile = viewModel.userProfile,
-        badge = viewModel.badge,
+        myPage = myPage,
+        badge = badge,
+        selectedTab = selectedTab,
+        listState = listState,
+        onSelect = {
+            viewModel.changeSelectedTab(it)
+        },
+        onBadgeRefresh = {
+            viewModel.refreshBadge()
+        },
+        onClickAppName = {
+            coroutineScope.launch {
+                listState.animateScrollToItem(0)
+            }
+        },
         modifier = modifier.fillMaxSize()
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MyPageScreen(
-    profile: UserProfile,
+    myPage: RemoteMyPage,
     badge: Badge,
+    selectedTab: MyPageTab,
+    listState : LazyListState,
+    onSelect: (MyPageTab) -> Unit,
+    onBadgeRefresh: () -> Unit,
+    onClickAppName : () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
     ) {
-        ProfileImage(
-            profileImageUrl = profile.imageUrl,
-            modifier = Modifier
-                .fillMaxWidth(0.33f)
-                .clip(CircleShape)
-                .aspectRatio(1f)
-        )
         Text(
-            modifier = Modifier.padding(
-                top = 10.dp,
-                bottom = 12.dp
-            ),
-            text = "${profile.name}! ${10}번 말리고 ${2}번 참았어요!",
-            style = Typography.XSmallSemiBold16,
-            color = Color(0xFF607864)
+            text = stringResource(id = R.string.app_name),
+            style = Typography.SmallMedium20,
+            color = Color(0xFF212121),
+            modifier = Modifier
+                .padding(vertical = 15.dp, horizontal = 24.dp)
+                .clickable {
+                    onClickAppName()
+                }
         )
-        RewardBadge(
-            modifier = Modifier.padding(bottom = 24.dp),
-            colors = CardDefaults.outlinedCardColors(
-                containerColor = badge.containerColor,
-            ),
-            borderStroke = BorderStroke(1.dp, color = badge.borderColor),
-            content = "이산화탄소 배출을 20kg 줄였어요!",
-            contentColor = Color(0xFF607864),
-            iconResId = badge.id
-        )
-
-        HorizontalDivider(
-            color = Color(0xFFE9E9E9)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(
-                34.dp,
-                alignment = Alignment.CenterHorizontally
-            )
-        ) {
-            MyPageTabItem()
-            MyPageTabItem()
-        }
-
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(vertical = 16.dp),
+            state = listState
         ) {
-            items(
-                listOf(
-                    1, 2, 3
+            item {
+                ProfileImage(
+                    profileImageUrl = myPage.profileImage,
+                    modifier = Modifier
+                        .fillMaxWidth(0.33f)
+                        .clip(CircleShape)
+                        .aspectRatio(1f)
                 )
-            ) {
+                Text(
+                    modifier = Modifier.padding(
+                        top = 10.dp,
+                        bottom = 12.dp,
+                    ),
+                    text = "${myPage.name}! ${myPage.countAdvisedNotToBuy}번 말리고 ${myPage.countDidNotBuy}번 참았어요!",
+                    style = Typography.XSmallSemiBold16,
+                    color = Color(0xFF607864)
+                )
+                RewardBadge(
+                    modifier = Modifier.padding(bottom = 24.dp, start = 12.dp,end = 12.dp),
+                    colors = CardDefaults.outlinedCardColors(
+                        containerColor = badge.containerColor,
+                    ),
+                    borderStroke = BorderStroke(1.dp, color = badge.borderColor),
+                    content = badge.getRewardText(myPage),
+                    contentColor = Color(0xFF607864),
+                    iconResId = badge.id,
+                    onBadgeRefresh = onBadgeRefresh
+                )
+
+                HorizontalDivider(
+                    color = Color(0xFFE9E9E9)
+                )
+
+            }
+
+            stickyHeader {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.background),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        34.dp,
+                        alignment = Alignment.CenterHorizontally
+                    )
+                ) {
+                    MyPageTab.entries.forEach {
+                        MyPageTabItem(
+                            title = it.id,
+                            selected = it == selectedTab,
+                            onSelect = {
+                                onSelect(it)
+                            }
+                        )
+                    }
+
+                }
+            }
+
+            items(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)) {
                 MyPagePostItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2.71f)
+                        .padding(start = 24.dp, end = 24.dp, top = 16.dp),
                     imageUrl = "https://qi-o.qoo10cdn.com/goods_image_big/9/0/4/5/8475369045_l.jpg",
-                    title = "test"
+                    title = "test",
+                    voteStatus = VoteStatus.entries.get(it % 4)
                 )
             }
         }
     }
+
+
 }
 
 @Composable
@@ -136,26 +204,38 @@ fun ProfileImage(
 
 @Composable
 fun MyPageTabItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    @StringRes title: Int,
+    selected: Boolean,
+    onSelect: () -> Unit
 ) {
     Column(
-        modifier = modifier.width(IntrinsicSize.Max)
+        modifier = modifier
+            .width(IntrinsicSize.Max)
+            .padding(top = 20.dp)
+            .clickable {
+                onSelect()
+            }
     ) {
-        Text("물어본거")
-        HorizontalDivider()
+        Text(
+            stringResource(id = title),
+            style = if (selected) Typography.XSmallSemiBold16.copy(fontSize = 18.sp)
+            else Typography.XSmallRegular16.copy(fontSize = 18.sp),
+            color = if (selected) Color(0xFF242424) else Color(0xFF989BA2)
+        )
+        if (selected) HorizontalDivider(color = Color(0xFF242424))
     }
 }
 
 @Composable
 fun MyPagePostItem(
-    modifier: Modifier = Modifier,
     imageUrl: String,
-    title: String
+    title: String,
+    voteStatus: VoteStatus,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(115.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp),
 
         ) {
@@ -166,12 +246,36 @@ fun MyPagePostItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.27f)
-            ){
+            ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxSize(),
                     model = imageUrl,
                     contentScale = ContentScale.FillHeight,
                     contentDescription = null
+                )
+                if (voteStatus in setOf(VoteStatus.Bought, VoteStatus.NotBought)) {
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White.copy(alpha = 0.6f))
+                    )
+                    if (voteStatus == VoteStatus.Bought) {
+                        StableImage(
+                            modifier = Modifier.align(Alignment.Center),
+                            drawableResId = R.drawable.img_word_stupid, description = null
+                        )
+                    } else {
+                        StableImage(
+                            modifier = Modifier.align(Alignment.Center),
+                            drawableResId = R.drawable.img_word_great, description = null
+                        )
+                    }
+                }
+                VoteStatusCard(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(10.dp),
+                    voteStatus = voteStatus
                 )
             }
             Column(
@@ -215,10 +319,12 @@ fun VoteCard() {
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.5f)
-                    .background(Color.Black))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.5f)
+                        .background(Color.Black)
+                )
 
                 Spacer(modifier = Modifier.weight(0.5f))
             }
@@ -231,7 +337,28 @@ fun VoteCard() {
                     .padding(horizontal = 12.dp)
             )
         }
+    }
+}
 
-
+@Composable
+fun VoteStatusCard(
+    voteStatus: VoteStatus,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = voteStatus.containerColor
+        )
+    ) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 10.dp, vertical = 2.dp),
+            text = stringResource(id = voteStatus.id),
+            style = Typography.XxSmallMedium12,
+            color = voteStatus.contentColor
+        )
     }
 }

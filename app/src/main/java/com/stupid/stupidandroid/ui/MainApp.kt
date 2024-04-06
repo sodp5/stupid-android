@@ -1,5 +1,8 @@
 package com.stupid.stupidandroid.ui
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -82,11 +89,32 @@ fun MainApp() {
                 )
             }
         }
+
+        val scaleAnimate by animateFloatAsState(
+            targetValue = if (shownEventScreen != null) {
+                1f
+            } else {
+                0.5f
+            },
+            label = "scale"
+        )
+
+        val alphaAnimate by animateFloatAsState(
+            targetValue = if (shownEventScreen != null) {
+                1f
+            } else {
+                0.6f
+            },
+            label = "alpha"
+        )
+
         if (shownEventScreen is Choice.BuyIt) {
             StableImage(
                 modifier = Modifier
+                    .scale(scaleAnimate)
+                    .alpha(alphaAnimate)
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .background(color = Color(0xCCFFFFFF)),
                 drawableResId = R.drawable.img_buy_it,
                 contentScale = ContentScale.FillWidth,
                 description = null
@@ -95,8 +123,10 @@ fun MainApp() {
         } else if (shownEventScreen is Choice.Stupid) {
             StableImage(
                 modifier = Modifier
+                    .scale(scaleAnimate)
+                    .alpha(alphaAnimate)
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .background(color = Color(0x78D2E7E0)),
                 drawableResId = R.drawable.img_stupid,
                 contentScale = ContentScale.FillWidth,
                 description = null
