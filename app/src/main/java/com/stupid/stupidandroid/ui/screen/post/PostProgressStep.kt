@@ -48,8 +48,7 @@ fun PostProgressStep.asExplain(): String {
         PostProgressStep.Third -> R.string.post_explain_3
         PostProgressStep.Fourth -> R.string.post_explain_4
         PostProgressStep.Fourth2 -> R.string.post_explain_finally_4
-
-        PostProgressStep.Finished -> error("$this cannot convert explain")
+        PostProgressStep.Finished -> R.string.post_explain_finish
     }
 
     return stringResource(explainRes)

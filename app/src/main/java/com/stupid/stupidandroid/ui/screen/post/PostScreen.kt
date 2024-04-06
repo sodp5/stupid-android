@@ -1,5 +1,8 @@
 package com.stupid.stupidandroid.ui.screen.post
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +34,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,17 +42,39 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
+import com.stupid.stupidandroid.util.ProgressRequestBody
 import kotlinx.coroutines.launch
+import okhttp3.RequestBody
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+
 
 @Composable
 fun PostScreen(
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = hiltViewModel()
 ) {
-    val pickMedia = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = viewModel::setImageUri,
-    )
+    val context = LocalContext.current
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        val inputStream: InputStream = context.contentResolver.openInputStream(it!!)!!
+        val tempFile = File.createTempFile("temp", ".png")
+        tempFile.deleteOnExit()
+
+        FileOutputStream(tempFile).use { outputStream ->
+            var read: Int
+            val bytes = ByteArray(256)
+            while (inputStream.read(bytes).also { read = it } != -1) {
+                outputStream.write(bytes, 0, read)
+            }
+        }
+
+        inputStream.close()
+
+        ProgressRequestBody
+
+        viewModel.setImageUri(it, tempFile)
+    }
 
     val uiState by viewModel.uiState.collectAsState()
 

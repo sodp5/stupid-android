@@ -101,6 +101,8 @@ fun PostStepContent(
                 R.string.post_step_4_2_chocies_3,
             ).map { stringResource(id = it) }.toImmutableList(),
         )
+
+        is PostUiState.Finish -> PostPrepared()
     }
 }
 
@@ -295,16 +297,6 @@ private fun PostReasonChoice(
             decorationBottomPadding = 28.dp,
         )
     }
-}
-
-@Composable
-private fun PostPurchaseDoubt() {
-
-}
-
-@Composable
-private fun PostPurchaseDoubtFinally() {
-
 }
 
 @Composable

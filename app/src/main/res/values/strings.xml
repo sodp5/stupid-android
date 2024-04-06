@@ -11,6 +11,7 @@
     <string name="post_explain_3">3. 이게 왜 사고싶어요?</string>
     <string name="post_explain_4">4. 이미 있는거 아니에요?</string>
     <string name="post_explain_finally_4">4. 진짜진짜 필요한거 맞아요?</string>
+    <string name="post_explain_finish">오케이,\n그럼 다른 사람들의 의견을 들어봅시다!</string>
     <string name="post_next">다음</string>
     
     <string name="post_step_1_content_title">일단 한번 보기나 합시다</string>
@@ -24,7 +25,7 @@
 
     <string name="post_step_4_chocies_1">진짜 진짜 없어요.</string>
     <string name="post_step_4_chocies_2">있기는 한데 달라요.</string>
-    <string name="post_step_4_chocies_3">있기는 한데 달라요.</string>
+    <string name="post_step_4_chocies_3">아니 진짜 꼭 필요해요.</string>
 
     <string name="post_step_4_2_chocies_1">네 없으면 죽어요.</string>
     <string name="post_step_4_2_chocies_2">그 정도는 아닌데 갖고싶어요ㅠ</string>

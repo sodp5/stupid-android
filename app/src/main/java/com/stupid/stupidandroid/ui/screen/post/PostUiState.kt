@@ -1,12 +1,16 @@
 package com.stupid.stupidandroid.ui.screen.post
 
 import android.net.Uri
+import java.io.File
 
 sealed interface PostUiState {
     val step: PostProgressStep
     val canNext: Boolean
 
-    data class First(val uri: Uri? = null) : PostUiState {
+    data class First(
+        val file: File? = null,
+        val uri: Uri? = null,
+    ) : PostUiState {
         override val step: PostProgressStep = PostProgressStep.First
         override val canNext: Boolean = uri != null
 
@@ -37,5 +41,10 @@ sealed interface PostUiState {
     data class Fourth2(val currentReason: String? = null) : PostUiState {
         override val step: PostProgressStep = PostProgressStep.Fourth2
         override val canNext: Boolean = currentReason?.isNotEmpty() == true
+    }
+
+    data class Finish(val uri: Uri) : PostUiState {
+        override val step: PostProgressStep = PostProgressStep.Finished
+        override val canNext: Boolean = true
     }
 }
