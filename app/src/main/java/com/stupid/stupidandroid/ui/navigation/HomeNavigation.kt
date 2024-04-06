@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.stupid.stupidandroid.ui.screen.home.HomeScreen
 
 
 const val homeNavigationRoute = "home_route"
@@ -17,6 +18,6 @@ fun NavGraphBuilder.homeScreen() {
     composable(
         route = homeNavigationRoute
     ) {
-
+        HomeScreen()
     }
 }

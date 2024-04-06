@@ -18,8 +18,8 @@ fun NavGraphBuilder.mainScreen() {
         startDestination = homeNavigationRoute,
         route = mainNavigationRoute
     ) {
-        homeScreen()
         postScreen()
+        homeScreen()
         myPageScreen()
     }
 }
