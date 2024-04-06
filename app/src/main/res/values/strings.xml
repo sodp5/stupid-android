@@ -12,4 +12,7 @@
     <string name="post_explain_4">4. 이미 있는거 아니에요?</string>
     <string name="post_explain_finally_4">4. 진짜진짜 필요한거 맞아요?</string>
     <string name="post_next">다음</string>
+    
+    <string name="post_step_1_content_title">일단 한번 보기나 합시다</string>
+    <string name="post_step_1_content_description">이미지를 업로드해주세요.</string>
 </resources>

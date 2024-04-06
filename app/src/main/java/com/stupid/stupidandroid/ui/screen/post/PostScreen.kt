@@ -1,5 +1,8 @@
 package com.stupid.stupidandroid.ui.screen.post
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,15 +30,26 @@ fun PostScreen(
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = hiltViewModel()
 ) {
+    val pickMedia = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = viewModel::setImageUri,
+    )
+
     PostScreen(
         modifier = modifier.fillMaxSize(),
-        currentStep = PostProgressStep.Second,
+        currentStep = PostProgressStep.First,
+        onImageUploadClick = {
+            val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            
+            pickMedia.launch(request)
+        },
     )
 }
 
 @Composable
 fun PostScreen(
     currentStep: PostProgressStep,
+    onImageUploadClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -64,11 +78,12 @@ fun PostScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Box(
+            PostStepContent(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(Color.Gray),
+                    .weight(1f),
+                step = currentStep,
+                onImageUploadClick = onImageUploadClick,
             )
 
             Spacer(modifier = Modifier.height(50.dp))
@@ -77,7 +92,7 @@ fun PostScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = { },
-                enabled = true,
+                enabled = false,
             )
         }
     }
@@ -117,5 +132,6 @@ private fun PostScreenPreview() {
     PostScreen(
         modifier = Modifier.fillMaxSize(),
         currentStep = PostProgressStep.Second,
+        onImageUploadClick = {},
     )
 }
