@@ -1,6 +1,8 @@
 package com.stupid.stupidandroid.ui.screen.post
 
 import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,8 +17,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +52,7 @@ private const val ExplainLengthThreshold = 17
 @Composable
 fun PostStepContent(
     postUiModel: PostUiModel,
+    scrollState: ScrollState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
     onReasonChange: (String, Boolean) -> Unit,
@@ -63,14 +68,18 @@ fun PostStepContent(
         )
 
         is PostUiModel.Second -> PostItemExplain(
-            modifier = modifier,
+            modifier = modifier
+                .verticalScroll(scrollState)
+                .padding(bottom = 128.dp),
             uri = postUiModel.uri,
             explain = postUiModel.explain,
             onExplainUpdate = onExplainUpdate,
         )
 
         is PostUiModel.Third -> PostReasonChoice(
-            modifier = modifier,
+            modifier = modifier
+                .verticalScroll(scrollState)
+                .padding(bottom = 128.dp),
             currentReason = postUiModel.currentReason,
             onReasonChange = onReasonChange,
             choicesSuggestions = listOf(
@@ -81,7 +90,9 @@ fun PostStepContent(
         )
 
         is PostUiModel.Fourth -> PostReasonChoice(
-            modifier = modifier,
+            modifier = modifier
+                .verticalScroll(scrollState)
+                .padding(bottom = 128.dp),
             currentReason = postUiModel.currentReason,
             onReasonChange = { reason, _ -> onDoubtReasonChange(reason) },
             choicesSuggestions = listOf(
@@ -92,7 +103,9 @@ fun PostStepContent(
         )
 
         is PostUiModel.Fourth2 -> PostReasonChoice(
-            modifier = modifier,
+            modifier = modifier
+                .verticalScroll(scrollState)
+                .padding(bottom = 128.dp),
             currentReason = postUiModel.currentReason,
             onReasonChange = { reason, _ -> onDoubt2ReasonChange(reason) },
             choicesSuggestions = listOf(
@@ -102,7 +115,10 @@ fun PostStepContent(
             ).map { stringResource(id = it) }.toImmutableList(),
         )
 
-        is PostUiModel.Finish -> PostPrepared()
+        is PostUiModel.Finish -> PostPrepared(
+            uri = postUiModel.uri,
+            modifier = modifier,
+        )
     }
 }
 
@@ -116,6 +132,8 @@ private fun PostImageUpload(
         SelectedItemImage(
             modifier = modifier
                 .padding(6.dp)
+                .fillMaxWidth()
+                .height(400.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .clickable(onClick = onImageUploadClick),
             uri = uri,
@@ -124,6 +142,8 @@ private fun PostImageUpload(
         Column(
             modifier = modifier
                 .padding(horizontal = 6.dp)
+                .fillMaxWidth()
+                .height(400.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .clickable(onClick = onImageUploadClick)
                 .background(
@@ -206,7 +226,10 @@ private fun PostItemExplain(
         )
 
         SelectedItemImage(
-            modifier = Modifier.padding(horizontal = 6.dp),
+            modifier = Modifier
+                .padding(horizontal = 6.dp)
+                .fillMaxWidth()
+                .height(400.dp),
             uri = uri,
         )
     }
@@ -300,8 +323,21 @@ private fun PostReasonChoice(
 }
 
 @Composable
-private fun PostPrepared() {
-
+private fun PostPrepared(
+    uri: Uri,
+    modifier: Modifier,
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp)),
+    ) {
+        AsyncImage(
+            model = uri,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
+        )
+    }
 }
 
 @Composable
@@ -368,6 +404,7 @@ private fun PostStepContentPreview() {
     Column {
         PostStepContent(
             postUiModel = PostUiModel.First(),
+            scrollState = ScrollState(0),
             onImageUploadClick = {},
             onExplainUpdate = {},
             onReasonChange = { _, _ -> },
