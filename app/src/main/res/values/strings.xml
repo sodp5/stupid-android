@@ -5,6 +5,9 @@
     <string name="main_tab_post">물어보기</string>
     <string name="main_tab_mypage">마이페이지</string>
 
+    <string name="kakao_login_button">카카오로 3초만에 시작하기</string>
+
+
     <string name="post_title">물어보기</string>
     <string name="post_explain_1">1. 뭘 사려고 하시나요?</string>
     <string name="post_explain_2">2. 이게 무엇인가요?</string>
@@ -13,7 +16,7 @@
     <string name="post_explain_finally_4">4. 진짜진짜 필요한거 맞아요?</string>
     <string name="post_explain_finish">오케이,\n그럼 다른 사람들의 의견을 들어봅시다!</string>
     <string name="post_next">다음</string>
-    
+
     <string name="post_step_1_content_title">일단 한번 보기나 합시다</string>
     <string name="post_step_1_content_description">이미지를 업로드해주세요.</string>
 

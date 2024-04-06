@@ -19,6 +19,11 @@ interface NetworkService {
         @Query("memberId") memberId : Long
     ): Response<List<RemotePost>>
 
+    @GET(value = "/oauth/kakao/login/app")
+    suspend fun registerKakaoToken(
+        @Query("token") token : String
+    ) : Response<Unit>
+
     @Multipart
     @POST(value = "/api/v1/post")
     suspend fun createPost(
