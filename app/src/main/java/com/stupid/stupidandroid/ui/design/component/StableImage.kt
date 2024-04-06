@@ -9,9 +9,9 @@ import androidx.compose.ui.res.painterResource
 
 @Composable
 fun StableImage (
-    modifier: Modifier = Modifier,
     @DrawableRes drawableResId: Int,
     description : String?,
+    modifier: Modifier = Modifier
 ) {
     val painter = painterResource(id = drawableResId)
     Image(
