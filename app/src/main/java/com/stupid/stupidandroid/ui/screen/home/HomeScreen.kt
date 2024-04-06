@@ -22,7 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.data.model.RemotePost
+import com.stupid.stupidandroid.ui.design.component.StableImage
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
 import com.stupid.stupidandroid.ui.design.icon.IconPack
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcBuy
@@ -32,8 +34,8 @@ import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    onShowEventScreen : (Choice) -> Unit,
-    modifier : Modifier = Modifier,
+    onShowEventScreen: (Choice) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.homeUiState.collectAsStateWithLifecycle()
@@ -45,7 +47,7 @@ fun HomeScreen(
     val isScrollBottom: Boolean by remember {
         derivedStateOf {
             listState.layoutInfo.visibleItemsInfo.lastOrNull()?.let { lastVisibleItem ->
-                lastVisibleItem.index != 0 && lastVisibleItem.index == listState.layoutInfo.totalItemsCount - 1
+                lastVisibleItem.index != 0 && lastVisibleItem.index == listState.layoutInfo.totalItemsCount - 5
             } ?: false
         }
     }
@@ -65,10 +67,10 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize(),
         homeUiState = uiState,
         onSwipeLeft = {
-            viewModel.swipePostCard(it,true)
+            viewModel.swipePostCard(it, true)
         },
         onSwipeRight = {
-            viewModel.swipePostCard(it,false)
+            viewModel.swipePostCard(it, false)
         },
         listState = listState,
         snapFlingBehavior = snapFlingBehavior
@@ -80,12 +82,12 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
-    onSwipeLeft : (RemotePost) -> Unit,
-    onSwipeRight : (RemotePost) -> Unit,
-    listState : LazyListState,
+    onSwipeLeft: (RemotePost) -> Unit,
+    onSwipeRight: (RemotePost) -> Unit,
+    listState: LazyListState,
     snapFlingBehavior: SnapFlingBehavior
-){
-    Column(
+) {
+    Box(
         modifier = modifier
     ) {
         LazyColumn(
@@ -95,33 +97,29 @@ fun HomeScreen(
         ) {
             items(homeUiState.postList, key = {
                 it.id
-            }){
-                Box(
-                  modifier = Modifier.fillMaxWidth()
-                ){
-                    SwipableCard(
-                        onSwipeLeft = {
-                            onSwipeLeft(it)
-                        },
-                        onSwipeRight = {
-                            onSwipeRight(it)
-                        }
-                    ) {
-                        PostCard(it)
+            }) {
+                SwipableCard(
+                    onSwipeLeft = {
+                        onSwipeLeft(it)
+                    },
+                    onSwipeRight = {
+                        onSwipeRight(it)
                     }
-                    Icon(
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        imageVector = IconPack.IcBuy, contentDescription = null
-                    )
-
-                    Icon(
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        imageVector = IconPack.IcStop, contentDescription = null
-                    )
+                ) {
+                    PostCard(it)
                 }
-
             }
         }
-    }
+        StableImage(
+            modifier = Modifier.align(Alignment.CenterStart),
+            drawableResId = R.drawable.img_buy,
+            description = null
+        )
+        StableImage(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            drawableResId = R.drawable.img_stop,
+            description = null
+        )
 
+    }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.theme.Typography
 
@@ -64,6 +65,7 @@ fun PostCard(
     modifier: Modifier = Modifier,
     imageUrl: String
 ) {
+    val painter = rememberAsyncImagePainter(model = "https://qi-o.qoo10cdn.com/goods_image_big/9/0/4/5/8475369045_l.jpg")
     Box(
         modifier = modifier.padding(horizontal = 6.dp)
     ) {
@@ -74,6 +76,7 @@ fun PostCard(
                 .aspectRatio(0.75f),
             contentScale = ContentScale.FillHeight,
             model = imageUrl,
+            error = painter,
             contentDescription = null
         )
         Spacer(
