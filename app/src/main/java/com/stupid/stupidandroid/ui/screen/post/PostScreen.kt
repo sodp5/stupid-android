@@ -22,14 +22,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +58,7 @@ fun PostScreen(
     val keyboardState by keyboardAsState()
 
     SideEffect {
-        if (keyboardState && uiState is PostUiState.Third) {
+        if (keyboardState && uiState !is PostUiState.Second) {
             coroutineScope.launch { scrollState.scrollTo(Int.MAX_VALUE) }
         }
     }
@@ -72,9 +69,9 @@ fun PostScreen(
         scrollState = scrollState,
         onNextStepClick = viewModel::goNextStep,
         onExplainUpdate = viewModel::setExplain,
-        onReasonChange = {
-            viewModel.setReason(it)
-        },
+        onReasonChange = viewModel::setReason,
+        onDoubtReasonChange = viewModel::setDoubtReason,
+        onDoubt2ReasonChange = viewModel::setDoubt2Reason,
         onImageUploadClick = {
             val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
@@ -89,7 +86,9 @@ fun PostScreen(
     scrollState: ScrollState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
-    onReasonChange: (String) -> Unit,
+    onReasonChange: (String, Boolean) -> Unit,
+    onDoubtReasonChange: (String) -> Unit,
+    onDoubt2ReasonChange: (String) -> Unit,
     onNextStepClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -130,6 +129,8 @@ fun PostScreen(
                     uiState = uiState,
                     onImageUploadClick = onImageUploadClick,
                     onExplainUpdate = onExplainUpdate,
+                    onDoubtReasonChange = onDoubtReasonChange,
+                    onDoubt2ReasonChange = onDoubt2ReasonChange,
                     onReasonChange = onReasonChange,
                 )
             }
@@ -184,7 +185,9 @@ private fun PostScreenPreview() {
         onNextStepClick = {},
         onImageUploadClick = {},
         onExplainUpdate = {},
-        onReasonChange = {},
+        onReasonChange = { _, _ -> },
+        onDoubtReasonChange = {},
+        onDoubt2ReasonChange = {},
     )
 }
 

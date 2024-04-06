@@ -21,8 +21,21 @@ sealed interface PostUiState {
         override val canNext: Boolean = IntRange(1, 17).contains(explain.length)
     }
 
-    data class Third(val currentReason: String?) : PostUiState {
+    data class Third(
+        val currentReason: String? = null,
+        val isPlanA: Boolean = false,
+    ) : PostUiState {
         override val step: PostProgressStep = PostProgressStep.Third
+        override val canNext: Boolean = currentReason?.isNotEmpty() == true
+    }
+
+    data class Fourth(val currentReason: String? = null) : PostUiState {
+        override val step: PostProgressStep = PostProgressStep.Fourth
+        override val canNext: Boolean = currentReason?.isNotEmpty() == true
+    }
+
+    data class Fourth2(val currentReason: String? = null) : PostUiState {
+        override val step: PostProgressStep = PostProgressStep.Fourth2
         override val canNext: Boolean = currentReason?.isNotEmpty() == true
     }
 }

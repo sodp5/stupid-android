@@ -18,7 +18,7 @@ enum class PostProgressStep(val isShowingStepInProgress: Boolean) {
     Fourth(
         isShowingStepInProgress = true,
     ),
-    FourthFinally(
+    Fourth2(
         isShowingStepInProgress = false,
     ),
     Finished(
@@ -32,7 +32,7 @@ fun PostProgressStep.asNumber(): String {
         PostProgressStep.Second,
         PostProgressStep.Third,
         PostProgressStep.Fourth -> (ordinal + 1).toString()
-        PostProgressStep.FourthFinally -> ordinal.toString()
+        PostProgressStep.Fourth2 -> ordinal.toString()
 
         PostProgressStep.Finished -> error("$this cannot convert number")
 
@@ -47,7 +47,7 @@ fun PostProgressStep.asExplain(): String {
         PostProgressStep.Second -> R.string.post_explain_2
         PostProgressStep.Third -> R.string.post_explain_3
         PostProgressStep.Fourth -> R.string.post_explain_4
-        PostProgressStep.FourthFinally -> R.string.post_explain_finally_4
+        PostProgressStep.Fourth2 -> R.string.post_explain_finally_4
 
         PostProgressStep.Finished -> error("$this cannot convert explain")
     }

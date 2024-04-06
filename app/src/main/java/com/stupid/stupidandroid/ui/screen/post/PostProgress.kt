@@ -105,7 +105,7 @@ private fun Modifier.drawProgressRail(currentStep: PostProgressStep): Modifier {
             PostProgressStep.Second -> sizeUnit * 3
             PostProgressStep.Third -> sizeUnit * 5
             PostProgressStep.Fourth,
-            PostProgressStep.FourthFinally,
+            PostProgressStep.Fourth2,
             PostProgressStep.Finished -> size.width
         }
 

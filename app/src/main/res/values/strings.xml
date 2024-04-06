@@ -21,5 +21,15 @@
     <string name="post_step_3_chocies_1">아니 너무 예쁘잖아요..</string>
     <string name="post_step_3_chocies_2">나중에 쓸 일이 생길지도 몰라요</string>
     <string name="post_step_3_chocies_3">진짜 꼭 필요한거에요ㅠ</string>
-    <string name="post_step_3_custom_placeholder">직접 입력</string>
+
+    <string name="post_step_4_chocies_1">진짜 진짜 없어요.</string>
+    <string name="post_step_4_chocies_2">있기는 한데 달라요.</string>
+    <string name="post_step_4_chocies_3">있기는 한데 달라요.</string>
+
+    <string name="post_step_4_2_chocies_1">네 없으면 죽어요.</string>
+    <string name="post_step_4_2_chocies_2">그 정도는 아닌데 갖고싶어요ㅠ</string>
+    <string name="post_step_4_2_chocies_3">사실 없어도 되긴 해요..</string>
+
+
+    <string name="post_step_choice_custom_placeholder">직접 입력</string>
 </resources>

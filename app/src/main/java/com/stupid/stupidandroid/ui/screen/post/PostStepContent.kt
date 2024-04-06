@@ -15,10 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +40,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 private const val ExplainLengthThreshold = 17
 
@@ -51,7 +50,9 @@ fun PostStepContent(
     uiState: PostUiState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
-    onReasonChange: (String) -> Unit,
+    onReasonChange: (String, Boolean) -> Unit,
+    onDoubtReasonChange: (String) -> Unit,
+    onDoubt2ReasonChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -67,14 +68,38 @@ fun PostStepContent(
             explain = uiState.explain,
             onExplainUpdate = onExplainUpdate,
         )
-//        PostProgressStep.Third -> PostPurchaseChoice()
-//        PostProgressStep.Fourth -> PostPurchaseDoubt()
-//        PostProgressStep.FourthFinally -> PostPurchaseDoubtFinally()
-//        PostProgressStep.Finished -> PostPrepared()
+
         is PostUiState.Third -> PostReasonChoice(
             modifier = modifier,
             currentReason = uiState.currentReason,
             onReasonChange = onReasonChange,
+            choicesSuggestions = listOf(
+                R.string.post_step_3_chocies_1,
+                R.string.post_step_3_chocies_2,
+                R.string.post_step_3_chocies_3,
+            ).map { stringResource(id = it) }.toImmutableList(),
+        )
+
+        is PostUiState.Fourth -> PostReasonChoice(
+            modifier = modifier,
+            currentReason = uiState.currentReason,
+            onReasonChange = { reason, _ -> onDoubtReasonChange(reason) },
+            choicesSuggestions = listOf(
+                R.string.post_step_4_chocies_1,
+                R.string.post_step_4_chocies_2,
+                R.string.post_step_4_chocies_3,
+            ).map { stringResource(id = it) }.toImmutableList(),
+        )
+
+        is PostUiState.Fourth2 -> PostReasonChoice(
+            modifier = modifier,
+            currentReason = uiState.currentReason,
+            onReasonChange = { reason, _ -> onDoubt2ReasonChange(reason) },
+            choicesSuggestions = listOf(
+                R.string.post_step_4_2_chocies_1,
+                R.string.post_step_4_2_chocies_2,
+                R.string.post_step_4_2_chocies_3,
+            ).map { stringResource(id = it) }.toImmutableList(),
         )
     }
 }
@@ -206,28 +231,19 @@ private fun SelectedItemImage(
 @Composable
 private fun PostReasonChoice(
     currentReason: String?,
-    onReasonChange: (String) -> Unit,
+    onReasonChange: (String, Boolean) -> Unit,
+    choicesSuggestions: ImmutableList<String>,
     modifier: Modifier = Modifier,
 ) {
-    val choicesSuggestionsRes = remember {
-        persistentListOf(
-            R.string.post_step_3_chocies_1,
-            R.string.post_step_3_chocies_2,
-            R.string.post_step_3_chocies_3,
-        )
-    }
-
     val (customChoice, customChoiceChange) = remember {
         mutableStateOf("")
     }
-
-    val reasons = choicesSuggestionsRes.map { stringResource(id = it) }
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        reasons.forEach { reason ->
+        choicesSuggestions.forEachIndexed { index, reason ->
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,7 +252,7 @@ private fun PostReasonChoice(
                         shape = RoundedCornerShape(8.dp),
                     )
                     .clip(RoundedCornerShape(8.dp))
-                    .clickable { onReasonChange(reason) }
+                    .clickable { onReasonChange(reason, index <= 1) }
                     .padding(horizontal = 14.dp, vertical = 12.dp),
                 text = reason,
                 style = Typography.XSmallMedium14,
@@ -249,7 +265,7 @@ private fun PostReasonChoice(
 
         LaunchedEffect(isPressed) {
             if (isPressed) {
-                onReasonChange(customChoice)
+                onReasonChange(customChoice, false)
             }
         }
 
@@ -257,14 +273,16 @@ private fun PostReasonChoice(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (currentReason != null && !reasons.contains(currentReason)) Color(0xFFD0F3DE) else Color(0xFFE9E9E9),
+                    color = if (currentReason != null && !choicesSuggestions.contains(currentReason)) Color(0xFFD0F3DE) else Color(
+                        0xFFE9E9E9
+                    ),
                     shape = RoundedCornerShape(8.dp),
                 )
                 .padding(horizontal = 14.dp, vertical = 12.dp)
                 .clip(RoundedCornerShape(8.dp)),
             text = customChoice,
             onChange = {
-                onReasonChange(it)
+                onReasonChange(it, false)
                 customChoiceChange(it)
             },
             textStyle = Typography.XSmallMedium14
@@ -272,7 +290,7 @@ private fun PostReasonChoice(
             interactionSource = interactionSource,
             singleLine = true,
             maxLines = 1,
-            placeHolder = stringResource(id = R.string.post_step_3_custom_placeholder),
+            placeHolder = stringResource(id = R.string.post_step_choice_custom_placeholder),
             maxLength = 29,
             decorationBottomPadding = 28.dp,
         )
@@ -360,7 +378,9 @@ private fun PostStepContentPreview() {
             uiState = PostUiState.First(),
             onImageUploadClick = {},
             onExplainUpdate = {},
-            onReasonChange = {},
+            onReasonChange = { _, _ -> },
+            onDoubtReasonChange = {},
+            onDoubt2ReasonChange = {},
             modifier = Modifier.fillMaxSize(),
         )
     }
