@@ -21,7 +21,7 @@ fun MainNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = loginNavigationRoute
+        startDestination = mainNavigationRoute
     ) {
         mainScreen(
             onNavigateHome = { navController.navigateToHome() },
