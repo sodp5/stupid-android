@@ -22,6 +22,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SwipableCard(
+    swipeEnabled: Boolean,
     onSwipeLeft: () -> Unit = {},
     onSwipeRight: () -> Unit = {},
     swipeThreshold: Float = 500f,
@@ -51,30 +52,36 @@ fun SwipableCard(
 
     Box(modifier = Modifier
         .offset { IntOffset(offset.roundToInt(), 0) }
-        .pointerInput(Unit) {
-            detectHorizontalDragGestures(onDragEnd = {
-                offset = 0f
-            }) { change, dragAmount ->
+        .then(
+            if (swipeEnabled) {
+                Modifier.pointerInput(Unit) {
+                    detectHorizontalDragGestures(onDragEnd = {
+                        offset = 0f
+                    }) { change, dragAmount ->
 
-                offset += (dragAmount / density) * sensitivityFactor
-                when {
-                    offset > swipeThreshold -> {
-                        for(i in 0..100){
-                            offset += 0.5f
-                        }
-                        dismissRight = true
-                    }
+                        offset += (dragAmount / density) * sensitivityFactor
+                        when {
+                            offset > swipeThreshold -> {
+                                for(i in 0..100){
+                                    offset += 0.5f
+                                }
+                                dismissRight = true
+                            }
 
-                    offset < -swipeThreshold -> {
-                        for(i in 0..100){
-                            offset -= 0.5f
+                            offset < -swipeThreshold -> {
+                                for(i in 0..100){
+                                    offset -= 0.5f
+                                }
+                                dismissLeft = true
+                            }
                         }
-                        dismissLeft = true
+                        if (change.positionChange() != Offset.Zero) change.consume()
                     }
                 }
-                if (change.positionChange() != Offset.Zero) change.consume()
+            } else {
+                Modifier
             }
-        }
+        )
         .graphicsLayer(
             alpha = 10f - animateFloatAsState(if (dismissRight) 1f else 0f).value,
             rotationZ = animateFloatAsState(offset / 50).value
