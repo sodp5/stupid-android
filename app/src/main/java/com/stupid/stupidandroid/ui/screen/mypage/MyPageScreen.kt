@@ -1,5 +1,7 @@
 package com.stupid.stupidandroid.ui.screen.mypage
 
+import android.util.Log
+import android.widget.ProgressBar
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -27,6 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,6 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.data.model.RemoteMyPage
+import com.stupid.stupidandroid.data.model.RemoteMyPageItem
 import com.stupid.stupidandroid.ui.design.component.Badge
 import com.stupid.stupidandroid.ui.design.component.RewardBadge
 import com.stupid.stupidandroid.ui.design.component.StableImage
@@ -60,14 +64,18 @@ fun MyPageScreen(
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
     val myPage by viewModel.myPage.collectAsStateWithLifecycle()
     val badge by viewModel.badge.collectAsStateWithLifecycle()
+    val postItemList by viewModel.postItemList.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     MyPageScreen(
         myPage = myPage,
         badge = badge,
         selectedTab = selectedTab,
         listState = listState,
+        postItemList = postItemList,
+        isLoading = isLoading,
         onSelect = {
             viewModel.changeSelectedTab(it)
         },
@@ -89,17 +97,19 @@ fun MyPageScreen(
     myPage: RemoteMyPage,
     badge: Badge,
     selectedTab: MyPageTab,
-    listState : LazyListState,
+    listState: LazyListState,
+    postItemList: List<RemoteMyPageItem>,
+    isLoading : Boolean,
     onSelect: (MyPageTab) -> Unit,
     onBadgeRefresh: () -> Unit,
-    onClickAppName : () -> Unit,
+    onClickAppName: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
     ) {
         Text(
-            text = stringResource(id = R.string.app_name),
+            text = stringResource(id = R.string.mypage_title),
             style = Typography.SmallMedium20,
             color = Color(0xFF212121),
             modifier = Modifier
@@ -131,7 +141,7 @@ fun MyPageScreen(
                     color = Color(0xFF607864)
                 )
                 RewardBadge(
-                    modifier = Modifier.padding(bottom = 24.dp, start = 12.dp,end = 12.dp),
+                    modifier = Modifier.padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
                     colors = CardDefaults.outlinedCardColors(
                         containerColor = badge.containerColor,
                     ),
@@ -167,24 +177,56 @@ fun MyPageScreen(
                             }
                         )
                     }
+
                 }
             }
-
-            items(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)) {
+            if(!isLoading)
+            items(postItemList) {
                 MyPagePostItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(2.71f)
                         .padding(start = 24.dp, end = 24.dp, top = 16.dp),
-                    imageUrl = "https://qi-o.qoo10cdn.com/goods_image_big/9/0/4/5/8475369045_l.jpg",
-                    title = "test",
-                    voteStatus = VoteStatus.entries.get(it % 4)
+                    imageUrl = it.imageUrl,
+                    title = it.title,
+                    voteStatus = if (it.purchased == null) {
+                        if (it.isProgressed) {
+                            VoteStatus.Voting
+                        } else {
+                            VoteStatus.Voted
+                        }
+                    } else {
+                        if (it.purchased == true) {
+                            VoteStatus.Bought
+                        } else {
+                            VoteStatus.NotBought
+                        }
+                    },
+                    voteResult = if (it.agreedCount > it.disagreedCount) {
+                        VoteResult(
+                            ratio = if((it.agreedCount + it.disagreedCount) == 0) 0 else (it.agreedCount * 100) / (it.agreedCount + it.disagreedCount),
+                            isBuyIt = true
+                        )
+                    } else {
+                        VoteResult(
+                            ratio =if((it.agreedCount + it.disagreedCount) == 0) 0 else  (it.disagreedCount * 100) / (it.agreedCount + it.disagreedCount),
+                            isBuyIt = false
+                        )
+                    }
+
+
                 )
             }
+
         }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+
     }
-
-
 }
 
 @Composable
@@ -231,6 +273,7 @@ fun MyPagePostItem(
     imageUrl: String,
     title: String,
     voteStatus: VoteStatus,
+    voteResult: VoteResult,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -292,7 +335,9 @@ fun MyPagePostItem(
                     style = Typography.XSmallSemiBold14,
                     color = Color(0xFF607864)
                 )
-                VoteCard()
+                VoteCard(
+                    voteResult
+                )
             }
         }
 
@@ -300,7 +345,9 @@ fun MyPagePostItem(
 }
 
 @Composable
-fun VoteCard() {
+fun VoteCard(
+    voteResult: VoteResult,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -318,17 +365,20 @@ fun VoteCard() {
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.5f)
-                        .background(Color.Black)
-                )
+                if(voteResult.ratio != 0){
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(voteResult.ratio.toFloat() / 100f)
+                            .background(Color.Black)
+                    )
 
-                Spacer(modifier = Modifier.weight(0.5f))
+                    Spacer(modifier = Modifier.weight((100f-voteResult.ratio.toFloat()) / 100f))
+                }
+
             }
             Text(
-                text = "사지 마라 50%",
+                text = (if (voteResult.isBuyIt) "사라" else "사지 마라") + " ${(voteResult.ratio)}%",
                 style = Typography.XSmallMedium14,
                 color = Color.White,
                 modifier = Modifier
@@ -361,3 +411,8 @@ fun VoteStatusCard(
         )
     }
 }
+
+data class VoteResult(
+    val ratio: Int,
+    val isBuyIt: Boolean
+)

@@ -1,11 +1,11 @@
 package com.stupid.stupidandroid.data.api
 
 import com.stupid.stupidandroid.data.model.RemoteMyPage
+import com.stupid.stupidandroid.data.model.RemoteMyPageItem
 import com.stupid.stupidandroid.data.model.RemotePost
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -45,4 +45,13 @@ interface NetworkService {
         @Query("memberId") memberId : Long
     ) : Response<RemoteMyPage>
 
+    @GET(value = "/api/v1/mypage/voted")
+    suspend fun getMypageVotedItemList(
+        @Query("memberId") memberId : Long
+    ) : Response<List<RemoteMyPageItem>>
+
+    @GET(value = "/api/v1/mypage/posts")
+    suspend fun getMypagePostItemList(
+        @Query("memberId") memberId : Long
+    ) : Response<List<RemoteMyPageItem>>
 }

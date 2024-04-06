@@ -46,4 +46,6 @@
     <string name="mypage_vote_status_not_bought">안샀다</string>
     <string name="mypage_vote_status_voted">투표 종료</string>
     <string name="mypage_vote_status_voting">진행 중</string>
+
+    <string name="mypage_title">살까말까?</string>
 </resources>
