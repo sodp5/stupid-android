@@ -21,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
 import com.stupid.stupidandroid.ui.design.icon.IconPack
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcBuy
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcStop
+import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -33,7 +35,7 @@ fun HomeScreen(
     modifier : Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val list by viewModel.list.collectAsStateWithLifecycle()
+    val uiState by viewModel.homeUiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
     val snappingLayout = remember(listState) { SnapLayoutInfoProvider(listState) }
@@ -47,12 +49,12 @@ fun HomeScreen(
 
     HomeScreen(
         modifier = modifier.fillMaxSize(),
-        cardList = list,
+        homeUiState = uiState,
         onSwipeLeft = {
-            viewModel.buyItem(it)
+            viewModel.swipePostCard(it,true)
         },
         onSwipeRight = {
-            viewModel.stopIt(it)
+            viewModel.swipePostCard(it,false)
         },
         listState = listState,
         snapFlingBehavior = snapFlingBehavior
@@ -63,9 +65,9 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    cardList : List<ItemModel>,
-    onSwipeLeft : (ItemModel) -> Unit,
-    onSwipeRight : (ItemModel) -> Unit,
+    homeUiState: HomeUiState,
+    onSwipeLeft : (RemotePost) -> Unit,
+    onSwipeRight : (RemotePost) -> Unit,
     listState : LazyListState,
     snapFlingBehavior: SnapFlingBehavior
 ){
@@ -77,7 +79,7 @@ fun HomeScreen(
             state = listState,
             flingBehavior = snapFlingBehavior
         ) {
-            items(cardList, key = {
+            items(homeUiState.postList, key = {
                 it.id
             }){
                 Box(
@@ -91,7 +93,7 @@ fun HomeScreen(
                             onSwipeRight(it)
                         }
                     ) {
-                        ItemCard(it)
+                        PostCard(it)
                     }
                     Icon(
                         modifier = Modifier.align(Alignment.CenterStart),

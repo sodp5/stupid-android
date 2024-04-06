@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,41 +25,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.stupid.stupidandroid.ui.design.icon.IconPack
-import com.stupid.stupidandroid.ui.design.icon.iconpack.IcBuy
-import com.stupid.stupidandroid.ui.design.icon.iconpack.IcStop
+import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.theme.Typography
 
 @Composable
-fun ItemCard(
-    itemModel: ItemModel
+fun PostCard(
+    post: RemotePost
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
-        ItemCard(
+        PostCard(
             modifier = Modifier.fillMaxWidth(),
-            imageUrl = itemModel.imageUrl
+            imageUrl = post.imageUrl
         )
         MainCommentBubble(
             modifier = Modifier.padding(top = 5.dp),
-            content = itemModel.mainComment
+            content = post.title
         )
-        itemModel.subCommentList.forEachIndexed { index, s ->
-            SubCommentBubble(
-                modifier = Modifier.padding(top = 10.dp),
-                content = "아니 너무 예쁘잖아요..",
-                isFromStart = index % 2 == 0
-            )
-        }
+        SubCommentBubble(
+            modifier = Modifier.padding(top = 10.dp),
+            content = post.contentFirst,
+            isFromStart = true
+        )
+        SubCommentBubble(
+            modifier = Modifier.padding(top = 10.dp),
+            content = post.contentFirst,
+            isFromStart = false
+        )
 
     }
 }
 
 @Composable
-fun ItemCard(
+fun PostCard(
     modifier: Modifier = Modifier,
     imageUrl: String
 ) {
