@@ -21,7 +21,7 @@ public val IconPack.Icons: ____KtList<ImageVector>
       return __Icons!!
     }
     __Icons = listOf(IcKakao,IcHomeSelected, IcPostUnselected,
-      IcHomeUnselected, IcPostSelected,IcStop, IcBuy,IcRefresh)
+      IcHomeUnselected, IcPostSelected,IcStop, IcBuy)
     return __Icons!!
   }
 
