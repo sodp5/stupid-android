@@ -1,6 +1,7 @@
 package com.stupid.stupidandroid.data.api
 
 import com.stupid.stupidandroid.data.model.RemoteMyPage
+import com.stupid.stupidandroid.data.model.RemoteMyPageItem
 import com.stupid.stupidandroid.data.model.RemotePost
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -44,4 +45,13 @@ interface NetworkService {
         @Query("memberId") memberId : Long
     ) : Response<RemoteMyPage>
 
+    @GET(value = "/api/v1/mypage/voted")
+    suspend fun getMypageVotedItemList(
+        @Query("memberId") memberId : Long
+    ) : Response<List<RemoteMyPageItem>>
+
+    @GET(value = "/api/v1/mypage/posts")
+    suspend fun getMypagePostItemList(
+        @Query("memberId") memberId : Long
+    ) : Response<List<RemoteMyPageItem>>
 }

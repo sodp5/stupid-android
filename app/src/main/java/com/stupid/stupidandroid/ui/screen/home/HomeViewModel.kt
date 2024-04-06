@@ -63,8 +63,6 @@ class HomeViewModel @Inject constructor(
 
 
     fun swipePostCard(item: RemotePost, isBuyIt: Boolean) {
-
-
         viewModelScope.launch {
             launch {
                 voteUseCase(item.id.toLong(), isBuyIt)

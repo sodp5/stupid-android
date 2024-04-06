@@ -3,6 +3,7 @@ package com.stupid.stupidandroid.ui.design.component
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +37,7 @@ fun RewardBadge(
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
-        modifier = modifier,
+        modifier = modifier.width(IntrinsicSize.Max),
         colors = colors,
         border = borderStroke
     ) {
@@ -52,7 +53,7 @@ fun RewardBadge(
                 description = null
             )
             Text(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
                 text = content,
                 color = contentColor,
                 style = Typography.XSmallMedium14

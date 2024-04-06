@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.data.model.RemoteMyPage
+import com.stupid.stupidandroid.data.model.RemoteMyPageItem
 import com.stupid.stupidandroid.ui.design.component.Badge
 import com.stupid.stupidandroid.usecase.GetMyPageInfoUseCase
+import com.stupid.stupidandroid.usecase.GetMyPagePostItemListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val getMyPageInfoUseCase: GetMyPageInfoUseCase
+    private val getMyPageInfoUseCase: GetMyPageInfoUseCase,
+    private val getMyPagePostItemListUseCase : GetMyPagePostItemListUseCase
 ) : ViewModel() {
     private val _myPage = MutableStateFlow(RemoteMyPage())
     val myPage: StateFlow<RemoteMyPage> = _myPage.asStateFlow()
@@ -26,8 +29,15 @@ class MyPageViewModel @Inject constructor(
     private val _badge = MutableStateFlow(Badge.Turtle)
     val badge : StateFlow<Badge> = _badge.asStateFlow()
 
+    private val _postItemList = MutableStateFlow<List<RemoteMyPageItem>>(emptyList())
+    val postItemList : StateFlow<List<RemoteMyPageItem>> = _postItemList.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading : StateFlow<Boolean> = _isLoading.asStateFlow()
+
     init {
         getMyPageInfo(1001)
+        getMyPagePostItemList(1001, true)
     }
 
     private val _selectedTab = MutableStateFlow(MyPageTab.Posted)
@@ -45,9 +55,25 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun getMyPagePostItemList(memberId: Long, isPostItem : Boolean){
+        viewModelScope.launch {
+            _isLoading.value = true
+            getMyPagePostItemListUseCase(
+                memberId = memberId,
+                isPostItem = isPostItem
+            ).catch {
+                _isLoading.emit(false)
+            }.collect {
+                _postItemList.emit(it)
+                _isLoading.emit(false)
+            }
+        }
+    }
+
     fun changeSelectedTab(tab: MyPageTab) {
         viewModelScope.launch {
             _selectedTab.emit(tab)
+            getMyPagePostItemList(1001, tab == MyPageTab.Posted)
         }
     }
 
