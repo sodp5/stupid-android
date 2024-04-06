@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
             _event.emit(
                 if (isBuyIt) Choice.BuyIt(item) else Choice.Stupid(item = item)
             )
-            delay(300)
+            delay(500)
             _homeUiState.update { state ->
                 state.copy(postList = homeUiState.value.postList.filterNot { it.id == item.id })
             }
