@@ -4,6 +4,7 @@ import com.stupid.stupidandroid.data.model.RemotePost
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -29,5 +30,12 @@ interface NetworkService {
     suspend fun createPost(
         @Part image: MultipartBody.Part,
         @Part("post") post: RequestBody,
+    )
+
+    @POST(value = "/api/v1/vote")
+    suspend fun vote(
+        @Query("memberId") memberId: Long,
+        @Query("postId") postId: Long,
+        @Query("isAgreed") isAgreed: Boolean,
     )
 }
