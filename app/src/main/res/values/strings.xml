@@ -15,4 +15,6 @@
     
     <string name="post_step_1_content_title">일단 한번 보기나 합시다</string>
     <string name="post_step_1_content_description">이미지를 업로드해주세요.</string>
+
+    <string name="post_step_2_explain_placeholder">사고싶은 물품명을 입력해주세요.</string>
 </resources>

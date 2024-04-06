@@ -43,6 +43,7 @@ fun PostScreen(
         modifier = modifier.fillMaxSize(),
         uiState = uiState,
         onNextStepClick = viewModel::goNextStep,
+        onExplainUpdate = viewModel::setExplain,
         onImageUploadClick = {
             val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
@@ -55,52 +56,56 @@ fun PostScreen(
 fun PostScreen(
     uiState: PostUiState,
     onImageUploadClick: () -> Unit,
+    onExplainUpdate: (String) -> Unit,
     onNextStepClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = modifier
             .background(Color.White)
     ) {
-        PostTitleBar()
+        Column {
+            PostTitleBar()
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 24.dp, top = 16.dp),
-        ) {
-            PostProgress(
-                modifier = Modifier.padding(horizontal = 48.dp),
-                currentStep = uiState.step,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = uiState.step.asExplain(),
-                style = Typography.XSmallSemiBold16,
-                color = Color(0xFF607864),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            PostStepContent(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                uiState = uiState,
-                onImageUploadClick = onImageUploadClick,
-            )
+                    .weight(1f)
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 16.dp),
+            ) {
+                PostProgress(
+                    modifier = Modifier.padding(horizontal = 48.dp),
+                    currentStep = uiState.step,
+                )
 
-            Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            NextButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = onNextStepClick,
-                enabled = uiState.canNext,
-            )
+                Text(
+                    text = uiState.step.asExplain(),
+                    style = Typography.XSmallSemiBold16,
+                    color = Color(0xFF607864),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PostStepContent(
+                    modifier = Modifier.fillMaxSize(),
+                    uiState = uiState,
+                    onImageUploadClick = onImageUploadClick,
+                    onExplainUpdate = onExplainUpdate,
+                )
+            }
         }
+
+        NextButton(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 24.dp)
+                .fillMaxWidth(),
+            onClick = onNextStepClick,
+            enabled = uiState.canNext,
+        )
     }
 }
 
@@ -118,11 +123,7 @@ private fun NextButton(
             )
             .background(
                 color = if (enabled) Color(0xFF333333) else Color(0xFFADAFB5),
-                shape = RoundedCornerShape(
-                    topEnd = 15.dp,
-                    bottomStart = 15.dp,
-                    bottomEnd = 15.dp,
-                )
+                shape = RoundedCornerShape(15.dp)
             ),
         contentAlignment = Alignment.Center,
     ) {
@@ -143,5 +144,6 @@ private fun PostScreenPreview() {
         uiState = PostUiState.First(),
         onNextStepClick = {},
         onImageUploadClick = {},
+        onExplainUpdate = {},
     )
 }

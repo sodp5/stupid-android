@@ -10,7 +10,7 @@ sealed interface PostUiState {
         override val step: PostProgressStep = PostProgressStep.First
         override val canNext: Boolean = uri != null
 
-        val requireUri = uri ?: error("No image has been selected in this step.")
+        val requireUri get() = uri ?: error("No image has been selected in this step.")
     }
 
     data class Second(

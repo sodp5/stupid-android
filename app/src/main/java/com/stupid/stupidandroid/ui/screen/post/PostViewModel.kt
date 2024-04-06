@@ -14,9 +14,15 @@ class PostViewModel @Inject constructor() : ViewModel() {
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
 
     fun setImageUri(uri: Uri?) {
-        _uiState.value = (uiState.value as? PostUiState.First)
-            ?.copy(uri = uri)
-            ?: PostUiState.First()
+        val state = (uiState.value as? PostUiState.First) ?: return
+
+        _uiState.value = state.copy(uri = uri)
+    }
+
+    fun setExplain(explain: String) {
+        val state = (uiState.value as? PostUiState.Second) ?: return
+
+        _uiState.value = state.copy(explain = explain)
     }
 
     fun goNextStep() {

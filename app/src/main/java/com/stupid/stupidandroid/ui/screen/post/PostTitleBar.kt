@@ -1,5 +1,6 @@
 package com.stupid.stupidandroid.ui.screen.post
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ fun PostTitleBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.White)
             .padding(vertical = 14.dp, horizontal = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,

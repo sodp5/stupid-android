@@ -6,18 +6,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,22 +37,30 @@ import coil.compose.AsyncImage
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
 
+private const val ExplainLengthThreshold = 17
+
 @Composable
 fun PostStepContent(
     uiState: PostUiState,
     onImageUploadClick: () -> Unit,
+    onExplainUpdate: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
         is PostUiState.First -> PostImageUpload(
-            modifier = modifier,
+            modifier = modifier
+                .padding(bottom = 128.dp),
             uri = uiState.uri,
             onImageUploadClick = onImageUploadClick,
         )
 
         is PostUiState.Second -> PostItemExplain(
-            modifier = modifier,
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 128.dp),
             uri = uiState.uri,
+            explain = uiState.explain,
+            onExplainUpdate = onExplainUpdate,
         )
 //        PostProgressStep.Third -> PostPurchaseChoice()
 //        PostProgressStep.Fourth -> PostPurchaseDoubt()
@@ -108,12 +125,73 @@ private fun PostImageUpload(
 @Composable
 private fun PostItemExplain(
     uri: Uri,
+    explain: String,
+    onExplainUpdate: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SelectedItemImage(
-        modifier = modifier.padding(horizontal = 6.dp),
-        uri = uri,
-    )
+    val focusRequest = remember {
+        FocusRequester()
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequest.requestFocus()
+    }
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        BasicTextField(
+            modifier = Modifier
+                .focusRequester(focusRequest)
+                .fillMaxWidth()
+                .background(
+                    color = Color(0xFFE9E9E9),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            value = explain,
+            onValueChange = { newValue ->
+                val limitedString = if (newValue.length > ExplainLengthThreshold) {
+                    newValue.substring(0, ExplainLengthThreshold)
+                } else {
+                    newValue
+                }
+
+                onExplainUpdate(limitedString)
+            },
+            textStyle = Typography.XSmallMedium14
+                .copy(color = Color.Black),
+            singleLine = true,
+            maxLines = 1,
+            decorationBox = { innerTextField ->
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (explain.isEmpty()) {
+                            Text(
+                                text = stringResource(id = R.string.post_step_2_explain_placeholder),
+                                style = Typography.XSmallMedium14,
+                                color = Color(0xFF989BA2),
+                            )
+                        }
+
+                        innerTextField()
+                    }
+
+                    Text(
+                        text = "${explain.length}/$ExplainLengthThreshold",
+                        style = Typography.XSmallMedium14,
+                        color = Color(0xFF989BA2),
+                    )
+                }
+            }
+        )
+
+        SelectedItemImage(
+            modifier = Modifier.padding(horizontal = 6.dp),
+            uri = uri,
+        )
+    }
 }
 
 @Composable
@@ -157,9 +235,12 @@ private fun PostPrepared() {
 @Preview
 @Composable
 private fun PostStepContentPreview() {
-    PostStepContent(
-        uiState = PostUiState.First(),
-        onImageUploadClick = {},
-        modifier = Modifier.fillMaxSize(),
-    )
+    Column {
+        PostStepContent(
+            uiState = PostUiState.First(),
+            onImageUploadClick = {},
+            onExplainUpdate = {},
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 }
