@@ -1,6 +1,7 @@
 package com.stupid.stupidandroid.ui.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
@@ -51,22 +53,29 @@ fun HomeScreen(
         },
         onSwipeRight = {
             viewModel.stopIt(it)
-        }
+        },
+        listState = listState,
+        snapFlingBehavior = snapFlingBehavior
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     cardList : List<ItemModel>,
     onSwipeLeft : (ItemModel) -> Unit,
-    onSwipeRight : (ItemModel) -> Unit
+    onSwipeRight : (ItemModel) -> Unit,
+    listState : LazyListState,
+    snapFlingBehavior: SnapFlingBehavior
 ){
     Column(
         modifier = modifier
     ) {
         LazyColumn(
-            modifier = modifier
+            modifier = modifier,
+            state = listState,
+            flingBehavior = snapFlingBehavior
         ) {
             items(cardList, key = {
                 it.id
