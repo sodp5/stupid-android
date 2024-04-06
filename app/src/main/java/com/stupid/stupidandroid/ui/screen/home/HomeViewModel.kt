@@ -53,7 +53,7 @@ class HomeViewModel @Inject constructor(
             )
             getPostListUseCase(
                 lastId = homeUiState.value.postList.lastOrNull()?.id ?: -1,
-                memberId = 1
+                memberId = 1001
             ).catch {
                 //TODO
             }.collect { result ->
