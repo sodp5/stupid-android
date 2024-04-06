@@ -12,4 +12,6 @@ val PretendardFamily = FontFamily(
     Font(R.font.pretendard_medium, FontWeight.Medium, FontStyle.Normal),
     Font(R.font.pretendard_semi_bold, FontWeight.SemiBold, FontStyle.Normal),
     Font(R.font.pretendard_regular, FontWeight.Normal, FontStyle.Normal),
+    Font(R.font.pretendard_light, FontWeight.Light, FontStyle.Normal),
+    Font(R.font.pretendard_thin, FontWeight.Thin, FontStyle.Normal)
 )
