@@ -40,7 +40,7 @@ fun MainApp() {
 
     LaunchedEffect(shownEventScreen) {
         if(shownEventScreen != null){
-            delay(1000)
+            delay(500)
             shownEventScreen = null
         }
     }
