@@ -7,6 +7,7 @@ import com.stupid.stupidandroid.ui.design.icon.iconpack.IcHomeSelected
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcHomeUnselected
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcPostSelected
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcPostUnselected
+import com.stupid.stupidandroid.ui.design.icon.iconpack.IcRefresh
 import com.stupid.stupidandroid.ui.design.icon.iconpack.IcStop
 import kotlin.collections.List as ____KtList
 
@@ -20,7 +21,7 @@ public val IconPack.Icons: ____KtList<ImageVector>
       return __Icons!!
     }
     __Icons = listOf(IcKakao,IcHomeSelected, IcPostUnselected,
-      IcHomeUnselected, IcPostSelected,IcStop, IcBuy)
+      IcHomeUnselected, IcPostSelected,IcStop, IcBuy,IcRefresh)
     return __Icons!!
   }
 

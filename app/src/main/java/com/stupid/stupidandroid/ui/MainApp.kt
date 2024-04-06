@@ -17,8 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.design.component.MainNavigationBar
 import com.stupid.stupidandroid.ui.design.component.MainNavigationBarItem
@@ -52,10 +54,17 @@ fun MainApp() {
                     destinations = TopLevelDestination.entries,
                     currentDestination = navController.currentBackStackEntryAsState().value?.destination,
                     onNavigateToDestination = {
+                        val navOptions = navOptions {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                         when (it) {
-                            TopLevelDestination.HOME -> navController.navigateToHome()
-                            TopLevelDestination.POST -> navController.navigateToPost()
-                            TopLevelDestination.MYPAGE -> navController.navigateToMyPage()
+                            TopLevelDestination.HOME -> navController.navigateToHome(navOptions)
+                            TopLevelDestination.POST -> navController.navigateToPost(navOptions)
+                            TopLevelDestination.MYPAGE -> navController.navigateToMyPage(navOptions)
                         }
                     }
                 )
