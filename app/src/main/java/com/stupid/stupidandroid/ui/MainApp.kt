@@ -46,8 +46,8 @@ fun MainApp() {
     }
 
     LaunchedEffect(shownEventScreen) {
-        if (shownEventScreen != null) {
-            delay(1000)
+        if(shownEventScreen != null){
+            delay(500)
             shownEventScreen = null
         }
     }
