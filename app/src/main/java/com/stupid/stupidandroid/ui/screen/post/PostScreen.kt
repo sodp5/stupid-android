@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,12 +37,15 @@ fun PostScreen(
         onResult = viewModel::setImageUri,
     )
 
+    val uiState by viewModel.uiState.collectAsState()
+
     PostScreen(
         modifier = modifier.fillMaxSize(),
-        currentStep = PostProgressStep.First,
+        uiState = uiState,
+        onNextStepClick = viewModel::goNextStep,
         onImageUploadClick = {
             val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            
+
             pickMedia.launch(request)
         },
     )
@@ -48,8 +53,9 @@ fun PostScreen(
 
 @Composable
 fun PostScreen(
-    currentStep: PostProgressStep,
+    uiState: PostUiState,
     onImageUploadClick: () -> Unit,
+    onNextStepClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -65,13 +71,13 @@ fun PostScreen(
         ) {
             PostProgress(
                 modifier = Modifier.padding(horizontal = 48.dp),
-                currentStep = currentStep,
+                currentStep = uiState.step,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = currentStep.asExplain(),
+                text = uiState.step.asExplain(),
                 style = Typography.XSmallSemiBold16,
                 color = Color(0xFF607864),
             )
@@ -82,7 +88,7 @@ fun PostScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                step = currentStep,
+                uiState = uiState,
                 onImageUploadClick = onImageUploadClick,
             )
 
@@ -91,8 +97,8 @@ fun PostScreen(
             NextButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { },
-                enabled = false,
+                onClick = onNextStepClick,
+                enabled = uiState.canNext,
             )
         }
     }
@@ -106,7 +112,10 @@ private fun NextButton(
 ) {
     Box(
         modifier = modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                enabled = enabled,
+                onClick = onClick,
+            )
             .background(
                 color = if (enabled) Color(0xFF333333) else Color(0xFFADAFB5),
                 shape = RoundedCornerShape(
@@ -131,7 +140,8 @@ private fun NextButton(
 private fun PostScreenPreview() {
     PostScreen(
         modifier = Modifier.fillMaxSize(),
-        currentStep = PostProgressStep.Second,
+        uiState = PostUiState.First(),
+        onNextStepClick = {},
         onImageUploadClick = {},
     )
 }
