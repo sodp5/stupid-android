@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -121,6 +122,7 @@ fun HomeScreen(
                 state = listState,
                 flingBehavior = snapFlingBehavior,
                 userScrollEnabled = false,
+                contentPadding = PaddingValues(top = 16.dp)
             ) {
                 items(homeUiState.postList, key = {
                     it.id

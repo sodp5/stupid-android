@@ -38,7 +38,8 @@ fun PostCard(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
+            .padding(bottom = 32.dp)
     ) {
         PostCard(
             modifier = Modifier.fillMaxWidth(),
@@ -80,40 +81,14 @@ fun PostCard(
     ) {
         AsyncImage(
             modifier = modifier
-                .padding(bottom = 5.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .aspectRatio(0.75f),
-            contentScale = ContentScale.FillHeight,
+                .fillMaxWidth()
+                .height(400.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
             model = imageUrl,
             error = painter,
             contentDescription = null
-        )
-    }
-}
-
-@Composable
-fun MainCommentBubble(
-    modifier: Modifier = Modifier,
-    content: String,
-    colors: CardColors = CardDefaults.cardColors(
-        containerColor = Color(0xFFE2FAE6),
-        contentColor = Color(0xFF607864)
-    )
-) {
-    Card(
-        modifier = modifier,
-        colors = colors,
-        shape = RoundedCornerShape(
-            topStart = 0.dp,
-            topEnd = 8.dp,
-            bottomStart = 8.dp,
-            bottomEnd = 8.dp
-        )
-    ) {
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            text = content,
-            style = Typography.XSmallSemiBold16
         )
     }
 }
