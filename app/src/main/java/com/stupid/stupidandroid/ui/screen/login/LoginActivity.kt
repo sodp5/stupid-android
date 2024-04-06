@@ -1,22 +1,25 @@
-package com.stupid.stupidandroid
+package com.stupid.stupidandroid.ui.screen.login
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.view.WindowCompat
-import com.stupid.stupidandroid.ui.MainApp
+import com.stupid.stupidandroid.MainActivity
 import com.stupid.stupidandroid.ui.theme.StupidAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
             StupidAndroidTheme {
-                MainApp()
+                LoginScreen(
+                    onLoginSuccess = {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    },
+                )
             }
         }
     }
