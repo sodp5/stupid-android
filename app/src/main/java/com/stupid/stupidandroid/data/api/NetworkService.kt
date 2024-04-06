@@ -39,7 +39,6 @@ interface NetworkService {
         @Query("postId") postId: Long,
         @Query("isAgreed") isAgreed: Boolean,
     )
-}
 
     @GET(value = "/api/v1/mypage")
     suspend fun getMypageInfo(
