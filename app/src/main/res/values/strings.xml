@@ -36,4 +36,6 @@
 
 
     <string name="post_step_choice_custom_placeholder">직접 입력</string>
+
+    <string name="login_title">살까말까 고민해줘!</string>
 </resources>
