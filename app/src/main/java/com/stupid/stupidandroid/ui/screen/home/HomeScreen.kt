@@ -5,14 +5,11 @@ import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -26,9 +23,6 @@ import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.design.component.StableImage
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
-import com.stupid.stupidandroid.ui.design.icon.IconPack
-import com.stupid.stupidandroid.ui.design.icon.iconpack.IcBuy
-import com.stupid.stupidandroid.ui.design.icon.iconpack.IcStop
 import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 
 @OptIn(ExperimentalFoundationApi::class)
