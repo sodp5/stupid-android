@@ -1,5 +1,6 @@
 package com.stupid.stupidandroid.ui.screen.home
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +40,8 @@ import com.stupid.stupidandroid.ui.design.component.StableImage
 import com.stupid.stupidandroid.ui.design.component.SwipableCard
 import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 import com.stupid.stupidandroid.ui.theme.Typography
+import com.stupid.stupidandroid.util.collectOnce
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -46,6 +50,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.homeUiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
@@ -66,8 +71,16 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect {
-            onShowEventScreen(it)
+        launch {
+            viewModel.event.collect {
+                onShowEventScreen(it)
+            }
+        }
+
+        launch {
+            viewModel.showErrorToast.collectOnce {
+                Toast.makeText(context, "일시적인 오류입니다!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
