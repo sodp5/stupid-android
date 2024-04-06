@@ -6,4 +6,9 @@
     <string name="main_tab_mypage">마이페이지</string>
 
     <string name="post_title">물어보기</string>
+    <string name="post_explain_1">1. 뭘 사려고 하시나요?</string>
+    <string name="post_explain_2">2. 이게 무엇인가요?</string>
+    <string name="post_explain_3">3. 이게 왜 사고싶어요?</string>
+    <string name="post_explain_4">4. 이미 있는거 아니에요?</string>
+    <string name="post_next">다음</string>
 </resources>
