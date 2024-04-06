@@ -52,7 +52,7 @@ fun RewardBadge(
                 description = null
             )
             Text(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.weight(1f, false).padding(horizontal = 4.dp),
                 text = content,
                 color = contentColor,
                 style = Typography.XSmallMedium14

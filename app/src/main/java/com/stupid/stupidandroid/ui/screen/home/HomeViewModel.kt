@@ -61,10 +61,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onVoteCard(isBuyIt: Boolean) {
+        viewModelScope.launch {
+            val item = homeUiState.value.postList.first()
+
+            launch {
+                voteUseCase(item.id.toLong(), isBuyIt)
+            }
+
+            _event.emit(
+                if (isBuyIt) Choice.BuyIt(item) else Choice.Stupid(item = item)
+            )
+            delay(500)
+            _homeUiState.update { state ->
+                state.copy(postList = homeUiState.value.postList.filterNot { it.id == item.id })
+            }
+        }
+    }
 
     fun swipePostCard(item: RemotePost, isBuyIt: Boolean) {
-
-
         viewModelScope.launch {
             launch {
                 voteUseCase(item.id.toLong(), isBuyIt)

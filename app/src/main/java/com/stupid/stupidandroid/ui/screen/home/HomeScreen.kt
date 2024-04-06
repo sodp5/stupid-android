@@ -2,9 +2,11 @@ package com.stupid.stupidandroid.ui.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,6 +74,12 @@ fun HomeScreen(
     HomeScreen(
         modifier = modifier.fillMaxSize(),
         homeUiState = uiState,
+        onLeftClick = {
+            viewModel.onVoteCard(true)
+        },
+        onRightClick = {
+            viewModel.onVoteCard(false)
+        },
         onSwipeLeft = {
             viewModel.swipePostCard(it, true)
         },
@@ -88,6 +96,8 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
+    onLeftClick: () -> Unit,
+    onRightClick: () -> Unit,
     onSwipeLeft: (RemotePost) -> Unit,
     onSwipeRight: (RemotePost) -> Unit,
     listState: LazyListState,
@@ -141,12 +151,24 @@ fun HomeScreen(
             }
         }
         StableImage(
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable(
+                    onClick = onLeftClick,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
             drawableResId = R.drawable.img_buy,
             description = null
         )
         StableImage(
-            modifier = Modifier.align(Alignment.CenterEnd),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable(
+                    onClick = onRightClick,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
             drawableResId = R.drawable.img_stop,
             description = null
         )
