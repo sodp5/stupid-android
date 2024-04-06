@@ -4,9 +4,10 @@ import com.stupid.stupidandroid.data.api.NetworkService
 import com.stupid.stupidandroid.data.model.RemoteMyPage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.lang.RuntimeException
 import javax.inject.Inject
 
-class GetMyPageInfoUseCase @Inject constructor(
+class GetMyPagePostItemListUseCase @Inject constructor(
     private val networkService: NetworkService
 ) {
     operator fun invoke(

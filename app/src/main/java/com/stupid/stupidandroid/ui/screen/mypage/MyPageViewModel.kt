@@ -23,11 +23,11 @@ class MyPageViewModel @Inject constructor(
     private val _myPage = MutableStateFlow(RemoteMyPage())
     val myPage: StateFlow<RemoteMyPage> = _myPage.asStateFlow()
 
-    private val _badge = MutableStateFlow<Badge>(Badge.Turtle)
+    private val _badge = MutableStateFlow(Badge.Turtle)
     val badge : StateFlow<Badge> = _badge.asStateFlow()
 
     init {
-        getMyPageInfo(1)
+        getMyPageInfo(1001)
     }
 
     private val _selectedTab = MutableStateFlow(MyPageTab.Posted)
@@ -57,11 +57,6 @@ class MyPageViewModel @Inject constructor(
         }
     }
 }
-
-data class UserProfile(
-    val imageUrl: String,
-    val name: String
-)
 
 enum class MyPageTab(@StringRes val id: Int) {
     Posted(id = R.string.mypage_tab_post), Voted(id = R.string.mypage_tab_vote)

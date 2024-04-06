@@ -131,7 +131,7 @@ fun MyPageScreen(
                     color = Color(0xFF607864)
                 )
                 RewardBadge(
-                    modifier = Modifier.padding(bottom = 24.dp),
+                    modifier = Modifier.padding(bottom = 24.dp, start = 12.dp,end = 12.dp),
                     colors = CardDefaults.outlinedCardColors(
                         containerColor = badge.containerColor,
                     ),
