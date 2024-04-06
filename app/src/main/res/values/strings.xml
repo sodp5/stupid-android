@@ -1,9 +1,39 @@
 <resources>
-    <string name="app_name">StupidAndroid 🤔</string>
+    <string name="app_name">StupidAndroid</string>
 
     <string name="main_tab_home">홈</string>
     <string name="main_tab_post">물어보기</string>
     <string name="main_tab_mypage">마이페이지</string>
 
     <string name="kakao_login_button">카카오로 3초만에 시작하기</string>
+
+
+    <string name="post_title">물어보기</string>
+    <string name="post_explain_1">1. 뭘 사려고 하시나요?</string>
+    <string name="post_explain_2">2. 이게 무엇인가요?</string>
+    <string name="post_explain_3">3. 이게 왜 사고싶어요?</string>
+    <string name="post_explain_4">4. 이미 있는거 아니에요?</string>
+    <string name="post_explain_finally_4">4. 진짜진짜 필요한거 맞아요?</string>
+    <string name="post_explain_finish">오케이,\n그럼 다른 사람들의 의견을 들어봅시다!</string>
+    <string name="post_next">다음</string>
+
+    <string name="post_step_1_content_title">일단 한번 보기나 합시다</string>
+    <string name="post_step_1_content_description">이미지를 업로드해주세요.</string>
+
+    <string name="post_step_2_explain_placeholder">사고싶은 물품명을 입력해주세요.</string>
+
+    <string name="post_step_3_chocies_1">아니 너무 예쁘잖아요..</string>
+    <string name="post_step_3_chocies_2">나중에 쓸 일이 생길지도 몰라요</string>
+    <string name="post_step_3_chocies_3">진짜 꼭 필요한거에요ㅠ</string>
+
+    <string name="post_step_4_chocies_1">진짜 진짜 없어요.</string>
+    <string name="post_step_4_chocies_2">있기는 한데 달라요.</string>
+    <string name="post_step_4_chocies_3">아니 진짜 꼭 필요해요.</string>
+
+    <string name="post_step_4_2_chocies_1">네 없으면 죽어요.</string>
+    <string name="post_step_4_2_chocies_2">그 정도는 아닌데 갖고싶어요ㅠ</string>
+    <string name="post_step_4_2_chocies_3">사실 없어도 되긴 해요..</string>
+
+
+    <string name="post_step_choice_custom_placeholder">직접 입력</string>
 </resources>

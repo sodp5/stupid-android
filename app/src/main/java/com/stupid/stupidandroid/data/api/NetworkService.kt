@@ -1,8 +1,12 @@
 package com.stupid.stupidandroid.data.api
 
 import com.stupid.stupidandroid.data.model.RemotePost
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface NetworkService {
@@ -18,4 +22,11 @@ interface NetworkService {
     suspend fun registerKakaoToken(
         @Query("token") token : String
     ) : Response<Unit>
+
+    @Multipart
+    @POST(value = "/api/v1/post")
+    suspend fun createPost(
+        @Part image: MultipartBody.Part,
+        @Part("post") post: RequestBody,
+    )
 }

@@ -8,6 +8,7 @@ import com.stupid.stupidandroid.ui.navigation.loginNavigationRoute
 import com.stupid.stupidandroid.ui.navigation.loginScreen
 import com.stupid.stupidandroid.ui.navigation.mainNavigationRoute
 import com.stupid.stupidandroid.ui.navigation.mainScreen
+import com.stupid.stupidandroid.ui.navigation.navigateToHome
 import com.stupid.stupidandroid.ui.screen.home.Choice
 
 @Composable
@@ -23,6 +24,7 @@ fun MainNavHost(
         startDestination = loginNavigationRoute
     ) {
         mainScreen(
+            onNavigateHome = { navController.navigateToHome() },
             onShowEventScreen = onShowEventScreen
         )
         loginScreen()

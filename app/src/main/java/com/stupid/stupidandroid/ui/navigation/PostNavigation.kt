@@ -14,10 +14,14 @@ fun NavController.navigateToPost(navOptions: NavOptions? = null) {
 }
 
 
-fun NavGraphBuilder.postScreen() {
+fun NavGraphBuilder.postScreen(
+    onNavigateHome: () -> Unit,
+) {
     composable(
         route = postNavigationRoute
     ) {
-        PostScreen()
+        PostScreen(
+            onNavigateHome = onNavigateHome,
+        )
     }
 }
