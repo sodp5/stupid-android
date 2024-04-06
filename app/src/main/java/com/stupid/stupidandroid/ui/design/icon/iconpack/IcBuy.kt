@@ -21,58 +21,7 @@ public val IconPack.IcBuy: ImageVector
         }
         _icBuy = Builder(name = "IcBuy", defaultWidth = 70.0.dp, defaultHeight = 140.0.dp,
                 viewportWidth = 70.0f, viewportHeight = 140.0f).apply {
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, fillAlpha = 0.5f,
-                    strokeLineWidth = 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero) {
-                moveTo(0.0f, 0.0f)
-                lineTo(2.471f, 8.229f)
-                curveTo(5.199f, 17.313f, 16.891f, 19.791f, 23.069f, 12.594f)
-                lineTo(28.628f, 6.119f)
-                lineTo(27.547f, 14.727f)
-                curveTo(26.367f, 24.123f, 36.026f, 31.119f, 44.586f, 27.069f)
-                lineTo(52.307f, 23.417f)
-                lineTo(47.803f, 30.896f)
-                curveTo(42.928f, 38.991f, 48.887f, 49.283f, 58.334f, 49.084f)
-                lineTo(66.941f, 48.903f)
-                lineTo(59.793f, 53.898f)
-                curveTo(52.058f, 59.305f, 53.303f, 71.113f, 61.995f, 74.787f)
-                lineTo(70.0f, 78.171f)
-                lineTo(61.504f, 79.801f)
-                curveTo(52.231f, 81.58f, 48.55f, 92.876f, 54.994f, 99.776f)
-                lineTo(60.956f, 106.16f)
-                lineTo(52.615f, 104.193f)
-                curveTo(43.408f, 102.022f, 35.426f, 110.861f, 38.522f, 119.8f)
-                lineTo(41.372f, 128.03f)
-                lineTo(34.591f, 122.856f)
-                curveTo(27.056f, 117.105f, 16.142f, 121.95f, 15.353f, 131.396f)
-                lineTo(14.634f, 140.0f)
-                lineTo(10.529f, 132.492f)
-                curveTo(5.977f, 124.169f, -5.977f, 124.169f, -10.529f, 132.492f)
-                lineTo(-14.634f, 140.0f)
-                lineTo(-15.353f, 131.396f)
-                curveTo(-16.142f, 121.95f, -27.056f, 117.105f, -34.591f, 122.856f)
-                lineTo(-41.372f, 128.03f)
-                lineTo(-38.522f, 119.8f)
-                curveTo(-35.426f, 110.861f, -43.408f, 102.022f, -52.615f, 104.193f)
-                lineTo(-60.956f, 106.16f)
-                lineTo(-54.994f, 99.776f)
-                curveTo(-48.55f, 92.876f, -52.231f, 81.58f, -61.504f, 79.801f)
-                lineTo(-70.0f, 78.171f)
-                lineTo(-61.995f, 74.787f)
-                curveTo(-53.303f, 71.113f, -52.058f, 59.305f, -59.793f, 53.898f)
-                lineTo(-66.941f, 48.903f)
-                lineTo(-58.334f, 49.084f)
-                curveTo(-48.887f, 49.283f, -42.928f, 38.991f, -47.803f, 30.896f)
-                lineTo(-52.307f, 23.417f)
-                lineTo(-44.586f, 27.069f)
-                curveTo(-36.026f, 31.119f, -26.367f, 24.123f, -27.547f, 14.727f)
-                lineTo(-28.628f, 6.119f)
-                lineTo(-23.069f, 12.594f)
-                curveTo(-16.891f, 19.791f, -5.199f, 17.313f, -2.471f, 8.229f)
-                lineTo(0.0f, 0.0f)
-                close()
-            }
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF242424)),
+            path(fill = SolidColor(Color(0xFFffffff)), stroke = SolidColor(Color(0xFF242424)),
                     strokeLineWidth = 1.0f, strokeLineCap = Butt, strokeLineJoin = Miter,
                     strokeLineMiter = 4.0f, pathFillType = NonZero) {
                 moveTo(-1.992f, 8.373f)

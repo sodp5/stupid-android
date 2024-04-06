@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +41,19 @@ fun HomeScreen(
 
     val snappingLayout = remember(listState) { SnapLayoutInfoProvider(listState) }
     val snapFlingBehavior = rememberSnapFlingBehavior(snappingLayout)
+
+    val isScrollBottom: Boolean by remember {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.let { lastVisibleItem ->
+                lastVisibleItem.index != 0 && lastVisibleItem.index == listState.layoutInfo.totalItemsCount - 1
+            } ?: false
+        }
+    }
+    LaunchedEffect(isScrollBottom) {
+        if (isScrollBottom && !viewModel.homeUiState.value.isEnded) {
+            viewModel.loadPostList()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect {
