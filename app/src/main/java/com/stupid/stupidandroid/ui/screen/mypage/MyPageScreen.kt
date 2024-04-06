@@ -411,3 +411,8 @@ fun VoteStatusCard(
         )
     }
 }
+
+data class VoteResult(
+    val ratio: Int,
+    val isBuyIt: Boolean
+)
