@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.stupid.stupidandroid.data.model.RemotePost
+import com.stupid.stupidandroid.ui.design.component.BubbleComment
 import com.stupid.stupidandroid.ui.theme.Typography
 
 @Composable
@@ -42,21 +44,28 @@ fun PostCard(
             modifier = Modifier.fillMaxWidth(),
             imageUrl = post.imageUrl
         )
-        MainCommentBubble(
-            modifier = Modifier.padding(top = 5.dp),
-            content = post.title
-        )
-        SubCommentBubble(
-            modifier = Modifier.padding(top = 10.dp),
-            content = post.contentFirst,
-            isFromStart = true
-        )
-        SubCommentBubble(
-            modifier = Modifier.padding(top = 10.dp),
-            content = post.contentFirst,
-            isFromStart = false
-        )
 
+        Column(
+            modifier = Modifier.offset(y = (-42).dp),
+        ) {
+            BubbleComment(
+                comment = post.title,
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SubCommentBubble(
+                content = post.contentFirst,
+                isFromStart = true
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SubCommentBubble(
+                content = post.contentSecond,
+                isFromStart = false
+            )
+        }
     }
 }
 
@@ -78,24 +87,6 @@ fun PostCard(
             model = imageUrl,
             error = painter,
             contentDescription = null
-        )
-        Spacer(
-            modifier = Modifier
-                .padding(start = 1.dp)
-                .width(36.dp)
-                .height(18.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color(0xFFE2FAE6))
-                .align(Alignment.BottomStart)
-        )
-        Spacer(
-            modifier = Modifier
-                .padding(23.dp)
-                .width(28.dp)
-                .height(14.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color(0xFFE2FAE6))
-                .align(Alignment.BottomStart)
         )
     }
 }

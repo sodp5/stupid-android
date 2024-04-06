@@ -1,6 +1,7 @@
 package com.stupid.stupidandroid.ui.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stupid.stupidandroid.R
@@ -82,7 +84,7 @@ fun HomeScreen(
     snapFlingBehavior: SnapFlingBehavior
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier.background(Color.White),
     ) {
         LazyColumn(
             modifier = modifier,
