@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.stupid.stupidandroid.R
 
 
-val pretendard = FontFamily(
+val PretendardFamily = FontFamily(
     Font(R.font.pretendard_bold, FontWeight.Bold, FontStyle.Normal),
     Font(R.font.pretendard_medium, FontWeight.Medium, FontStyle.Normal),
     Font(R.font.pretendard_semi_bold, FontWeight.SemiBold, FontStyle.Normal),
