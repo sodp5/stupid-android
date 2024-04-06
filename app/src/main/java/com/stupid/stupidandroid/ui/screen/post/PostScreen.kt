@@ -1,8 +1,5 @@
 package com.stupid.stupidandroid.ui.screen.post
 
-import android.content.Context
-import android.net.Uri
-import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -42,9 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stupid.stupidandroid.R
 import com.stupid.stupidandroid.ui.theme.Typography
-import com.stupid.stupidandroid.util.ProgressRequestBody
 import kotlinx.coroutines.launch
-import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -71,8 +67,6 @@ fun PostScreen(
 
         inputStream.close()
 
-        ProgressRequestBody
-
         viewModel.setImageUri(it, tempFile)
     }
 
@@ -84,31 +78,39 @@ fun PostScreen(
     val keyboardState by keyboardAsState()
 
     SideEffect {
-        if (keyboardState && uiState !is PostUiState.Second) {
+        if (keyboardState && uiState.postUiModel !is PostUiModel.Second) {
             coroutineScope.launch { scrollState.scrollTo(Int.MAX_VALUE) }
         }
     }
 
-    PostScreen(
-        modifier = modifier.fillMaxSize(),
-        uiState = uiState,
-        scrollState = scrollState,
-        onNextStepClick = viewModel::goNextStep,
-        onExplainUpdate = viewModel::setExplain,
-        onReasonChange = viewModel::setReason,
-        onDoubtReasonChange = viewModel::setDoubtReason,
-        onDoubt2ReasonChange = viewModel::setDoubt2Reason,
-        onImageUploadClick = {
-            val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+    Box {
+        PostScreen(
+            modifier = modifier.fillMaxSize(),
+            postUiModel = uiState.postUiModel,
+            scrollState = scrollState,
+            onNextStepClick = viewModel::goNextStep,
+            onExplainUpdate = viewModel::setExplain,
+            onReasonChange = viewModel::setReason,
+            onDoubtReasonChange = viewModel::setDoubtReason,
+            onDoubt2ReasonChange = viewModel::setDoubt2Reason,
+            onImageUploadClick = {
+                val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
-            pickMedia.launch(request)
-        },
-    )
+                pickMedia.launch(request)
+            },
+        )
+
+        if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+            )
+        }
+    }
 }
 
 @Composable
 fun PostScreen(
-    uiState: PostUiState,
+    postUiModel: PostUiModel,
     scrollState: ScrollState,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
@@ -134,13 +136,13 @@ fun PostScreen(
             ) {
                 PostProgress(
                     modifier = Modifier.padding(horizontal = 48.dp),
-                    currentStep = uiState.step,
+                    currentStep = postUiModel.step,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = uiState.step.asExplain(),
+                    text = postUiModel.step.asExplain(),
                     style = Typography.XSmallSemiBold16,
                     color = Color(0xFF607864),
                 )
@@ -152,7 +154,7 @@ fun PostScreen(
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                         .padding(bottom = 128.dp),
-                    uiState = uiState,
+                    postUiModel = postUiModel,
                     onImageUploadClick = onImageUploadClick,
                     onExplainUpdate = onExplainUpdate,
                     onDoubtReasonChange = onDoubtReasonChange,
@@ -169,7 +171,7 @@ fun PostScreen(
                 .padding(bottom = 24.dp)
                 .fillMaxWidth(),
             onClick = onNextStepClick,
-            enabled = uiState.canNext,
+            enabled = postUiModel.canNext,
         )
     }
 }
@@ -206,7 +208,7 @@ private fun NextButton(
 private fun PostScreenPreview() {
     PostScreen(
         modifier = Modifier.fillMaxSize(),
-        uiState = PostUiState.First(),
+        postUiModel = PostUiModel.First(),
         scrollState = ScrollState(0),
         onNextStepClick = {},
         onImageUploadClick = {},

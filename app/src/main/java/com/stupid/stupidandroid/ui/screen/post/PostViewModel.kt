@@ -9,16 +9,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 data class PostUiStateSnapshot(
-    val first: PostUiState.First? = null,
-    val second: PostUiState.Second? = null,
-    val third: PostUiState.Third? = null,
-    val fourth: PostUiState.Fourth? = null,
-    val fourth2: PostUiState.Fourth2? = null,
+    val first: PostUiModel.First? = null,
+    val second: PostUiModel.Second? = null,
+    val third: PostUiModel.Third? = null,
+    val fourth: PostUiModel.Fourth? = null,
+    val fourth2: PostUiModel.Fourth2? = null,
 ) {
     fun toPost(): Post {
         return Post(
@@ -34,78 +35,98 @@ data class PostUiStateSnapshot(
 class PostViewModel @Inject constructor(
     private val createPostUseCase: CreatePostUseCase,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<PostUiState> = MutableStateFlow(PostUiState.First())
+    private val _uiState: MutableStateFlow<PostUiState> = MutableStateFlow(PostUiState(PostUiModel.First(), false))
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
 
     private var stateSnapshot = PostUiStateSnapshot()
 
     fun setImageUri(uri: Uri?, file: File?) {
-        val state = (uiState.value as? PostUiState.First) ?: return
+        val uiModel = (uiState.value.postUiModel as? PostUiModel.First) ?: return
 
-        _uiState.value = state.copy(uri = uri, file = file)
+        _uiState.value = uiState.value.copy(postUiModel = uiModel.copy(uri = uri, file = file))
     }
 
     fun setExplain(explain: String) {
-        val state = (uiState.value as? PostUiState.Second) ?: return
+        val uiModel = (uiState.value.postUiModel as? PostUiModel.Second) ?: return
 
-        _uiState.value = state.copy(explain = explain)
+        _uiState.value = uiState.value.copy(postUiModel = uiModel.copy(explain = explain))
     }
 
     fun setReason(reason: String, isPlanA: Boolean) {
-        val state = (uiState.value as? PostUiState.Third) ?: return
+        val uiModel = (uiState.value.postUiModel as? PostUiModel.Third) ?: return
 
-        _uiState.value = state.copy(currentReason = reason, isPlanA = isPlanA)
+        _uiState.value = uiState.value.copy(postUiModel = uiModel.copy(currentReason = reason, isPlanA = isPlanA))
     }
 
     fun setDoubtReason(reason: String) {
-        val state = (uiState.value as? PostUiState.Fourth) ?: return
+        val uiModel = (uiState.value.postUiModel as? PostUiModel.Fourth) ?: return
 
-        _uiState.value = state.copy(currentReason = reason)
+        _uiState.value = uiState.value.copy(postUiModel = uiModel.copy(currentReason = reason))
     }
 
     fun setDoubt2Reason(reason: String) {
-        val state = (uiState.value as? PostUiState.Fourth2) ?: return
+        val uiModel = (uiState.value.postUiModel as? PostUiModel.Fourth2) ?: return
 
-        _uiState.value = state.copy(currentReason = reason)
+        _uiState.value = uiState.value.copy(postUiModel = uiModel.copy(currentReason = reason))
     }
 
     fun goNextStep() {
-        when (val state = uiState.value) {
-            is PostUiState.First -> {
+        when (val state = uiState.value.postUiModel) {
+            is PostUiModel.First -> {
                 stateSnapshot = stateSnapshot.copy(first = state)
-                _uiState.value = PostUiState.Second(state.requireUri, "")
-            }
-
-            is PostUiState.Second -> {
-                stateSnapshot = stateSnapshot.copy(second = state)
-                _uiState.value = PostUiState.Third()
-            }
-
-            is PostUiState.Third -> {
-                stateSnapshot = stateSnapshot.copy(third = state)
-                _uiState.value = if (state.isPlanA) {
-                    PostUiState.Fourth()
-                } else {
-                    PostUiState.Fourth2()
+                _uiState.update {
+                    it.copy(postUiModel = PostUiModel.Second(state.requireUri, ""))
                 }
             }
 
-            is PostUiState.Fourth -> {
+            is PostUiModel.Second -> {
+                stateSnapshot = stateSnapshot.copy(second = state)
+                _uiState.update {
+                    it.copy(postUiModel = PostUiModel.Third())
+                }
+            }
+
+            is PostUiModel.Third -> {
+                stateSnapshot = stateSnapshot.copy(third = state)
+                _uiState.update {
+                    it.copy(
+                        postUiModel = if (state.isPlanA) {
+                            PostUiModel.Fourth()
+                        } else {
+                            PostUiModel.Fourth2()
+                        }
+                    )
+                }
+            }
+
+            is PostUiModel.Fourth -> {
                 stateSnapshot = stateSnapshot.copy(fourth = state)
-                _uiState.value = PostUiState.Finish((stateSnapshot.first ?: PostUiState.First()).requireUri)
+                _uiState.update {
+                    it.copy(postUiModel = PostUiModel.Finish((stateSnapshot.first ?: PostUiModel.First()).requireUri))
+                }
             }
 
-            is PostUiState.Fourth2 -> {
+            is PostUiModel.Fourth2 -> {
                 stateSnapshot = stateSnapshot.copy(fourth2 = state)
-                _uiState.value = PostUiState.Finish((stateSnapshot.first ?: PostUiState.First()).requireUri)
+                _uiState.update {
+                    it.copy(postUiModel = PostUiModel.Finish((stateSnapshot.first ?: PostUiModel.First()).requireUri))
+                }
             }
 
-            is PostUiState.Finish -> {
+            is PostUiModel.Finish -> {
                 viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isLoading = true)
+                    }
+
                     createPostUseCase(
                         stateSnapshot.first?.file!!,
                         stateSnapshot.toPost(),
                     )
+                }.invokeOnCompletion {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
                 }
             }
         }

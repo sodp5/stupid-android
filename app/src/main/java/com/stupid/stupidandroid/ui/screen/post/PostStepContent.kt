@@ -47,7 +47,7 @@ private const val ExplainLengthThreshold = 17
 
 @Composable
 fun PostStepContent(
-    uiState: PostUiState,
+    postUiModel: PostUiModel,
     onImageUploadClick: () -> Unit,
     onExplainUpdate: (String) -> Unit,
     onReasonChange: (String, Boolean) -> Unit,
@@ -55,23 +55,23 @@ fun PostStepContent(
     onDoubt2ReasonChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (uiState) {
-        is PostUiState.First -> PostImageUpload(
+    when (postUiModel) {
+        is PostUiModel.First -> PostImageUpload(
             modifier = modifier,
-            uri = uiState.uri,
+            uri = postUiModel.uri,
             onImageUploadClick = onImageUploadClick,
         )
 
-        is PostUiState.Second -> PostItemExplain(
+        is PostUiModel.Second -> PostItemExplain(
             modifier = modifier,
-            uri = uiState.uri,
-            explain = uiState.explain,
+            uri = postUiModel.uri,
+            explain = postUiModel.explain,
             onExplainUpdate = onExplainUpdate,
         )
 
-        is PostUiState.Third -> PostReasonChoice(
+        is PostUiModel.Third -> PostReasonChoice(
             modifier = modifier,
-            currentReason = uiState.currentReason,
+            currentReason = postUiModel.currentReason,
             onReasonChange = onReasonChange,
             choicesSuggestions = listOf(
                 R.string.post_step_3_chocies_1,
@@ -80,9 +80,9 @@ fun PostStepContent(
             ).map { stringResource(id = it) }.toImmutableList(),
         )
 
-        is PostUiState.Fourth -> PostReasonChoice(
+        is PostUiModel.Fourth -> PostReasonChoice(
             modifier = modifier,
-            currentReason = uiState.currentReason,
+            currentReason = postUiModel.currentReason,
             onReasonChange = { reason, _ -> onDoubtReasonChange(reason) },
             choicesSuggestions = listOf(
                 R.string.post_step_4_chocies_1,
@@ -91,9 +91,9 @@ fun PostStepContent(
             ).map { stringResource(id = it) }.toImmutableList(),
         )
 
-        is PostUiState.Fourth2 -> PostReasonChoice(
+        is PostUiModel.Fourth2 -> PostReasonChoice(
             modifier = modifier,
-            currentReason = uiState.currentReason,
+            currentReason = postUiModel.currentReason,
             onReasonChange = { reason, _ -> onDoubt2ReasonChange(reason) },
             choicesSuggestions = listOf(
                 R.string.post_step_4_2_chocies_1,
@@ -102,7 +102,7 @@ fun PostStepContent(
             ).map { stringResource(id = it) }.toImmutableList(),
         )
 
-        is PostUiState.Finish -> PostPrepared()
+        is PostUiModel.Finish -> PostPrepared()
     }
 }
 
@@ -367,7 +367,7 @@ private fun PostInputField(
 private fun PostStepContentPreview() {
     Column {
         PostStepContent(
-            uiState = PostUiState.First(),
+            postUiModel = PostUiModel.First(),
             onImageUploadClick = {},
             onExplainUpdate = {},
             onReasonChange = { _, _ -> },
