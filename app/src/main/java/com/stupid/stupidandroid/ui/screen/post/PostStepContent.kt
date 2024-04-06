@@ -56,16 +56,13 @@ fun PostStepContent(
 ) {
     when (uiState) {
         is PostUiState.First -> PostImageUpload(
-            modifier = modifier
-                .padding(bottom = 128.dp),
+            modifier = modifier,
             uri = uiState.uri,
             onImageUploadClick = onImageUploadClick,
         )
 
         is PostUiState.Second -> PostItemExplain(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 128.dp),
+            modifier = modifier,
             uri = uiState.uri,
             explain = uiState.explain,
             onExplainUpdate = onExplainUpdate,
@@ -75,6 +72,7 @@ fun PostStepContent(
 //        PostProgressStep.FourthFinally -> PostPurchaseDoubtFinally()
 //        PostProgressStep.Finished -> PostPrepared()
         is PostUiState.Third -> PostReasonChoice(
+            modifier = modifier,
             currentReason = uiState.currentReason,
             onReasonChange = onReasonChange,
         )
@@ -209,6 +207,7 @@ private fun SelectedItemImage(
 private fun PostReasonChoice(
     currentReason: String?,
     onReasonChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val choicesSuggestionsRes = remember {
         persistentListOf(
@@ -225,7 +224,8 @@ private fun PostReasonChoice(
     val reasons = choicesSuggestionsRes.map { stringResource(id = it) }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         reasons.forEach { reason ->
             Text(
