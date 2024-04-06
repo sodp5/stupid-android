@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.stupid.stupidandroid.data.model.RemotePost
 import com.stupid.stupidandroid.ui.screen.home.state.HomeUiState
 import com.stupid.stupidandroid.usecase.GetPostListUseCase
+import com.stupid.stupidandroid.usecase.VoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,12 +15,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getPostListUseCase: GetPostListUseCase
+    private val getPostListUseCase: GetPostListUseCase,
+    private val voteUseCase: VoteUseCase,
 ) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
@@ -60,16 +63,20 @@ class HomeViewModel @Inject constructor(
 
 
     fun swipePostCard(item: RemotePost, isBuyIt: Boolean) {
+
+
         viewModelScope.launch {
+            launch {
+                voteUseCase(item.id.toLong(), isBuyIt)
+            }
+
             _event.emit(
-                if (isBuyIt)
-                    Choice.BuyIt(item) else Choice.Stupid(item = item)
+                if (isBuyIt) Choice.BuyIt(item) else Choice.Stupid(item = item)
             )
-            delay(1000)
-            _homeUiState.emit(
-                _homeUiState.value.copy(
-                    postList = homeUiState.value.postList.filterNot { it.id == item.id })
-            )
+            delay(300)
+            _homeUiState.update { state ->
+                state.copy(postList = homeUiState.value.postList.filterNot { it.id == item.id })
+            }
         }
     }
 

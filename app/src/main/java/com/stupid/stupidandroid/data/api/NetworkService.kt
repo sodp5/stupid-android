@@ -32,6 +32,13 @@ interface NetworkService {
         @Part("post") post: RequestBody,
     )
 
+    @POST(value = "/api/v1/vote")
+    suspend fun vote(
+        @Query("memberId") memberId: Long,
+        @Query("postId") postId: Long,
+        @Query("isAgreed") isAgreed: Boolean,
+    )
+
     @GET(value = "/api/v1/mypage")
     suspend fun getMypageInfo(
         @Query("memberId") memberId : Long
