@@ -13,4 +13,9 @@ interface NetworkService {
         @Query("size") size: Int = 20,
         @Query("memberId") memberId : Long
     ): Response<List<RemotePost>>
+
+    @GET(value = "/oauth/kakao/login/app")
+    suspend fun registerKakaoToken(
+        @Query("token") token : String
+    ) : Response<Unit>
 }

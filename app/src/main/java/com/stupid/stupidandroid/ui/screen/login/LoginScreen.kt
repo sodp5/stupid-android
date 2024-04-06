@@ -53,6 +53,9 @@ fun LoginScreen(
                     Log.e("Login", "로그인 실패", error)
                 } else if (token != null) {
                     Log.i("Login", "로그인 성공 ${token.accessToken}")
+                    viewModel.registerKakaoToken(
+                        token.accessToken
+                    )
                 }
             }
         }
