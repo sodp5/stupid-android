@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.stupid.stupidandroid.R
+import com.stupid.stupidandroid.ui.theme.Typography
 
 @Composable
 fun PostProgress(
@@ -72,7 +73,8 @@ private fun ProgressStep(step: PostProgressStep) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = step.asNumber(),
-            color = Color(0xFF13C55A)
+            color = Color(0xFF13C55A),
+            style = Typography.XSmallSemiBold14,
         )
     }
 }
@@ -88,7 +90,8 @@ private fun NotStartedStep(step: PostProgressStep) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = step.asNumber(),
-            color = Color(0xFF909090)
+            color = Color(0xFF909090),
+            style = Typography.XSmallSemiBold14,
         )
     }
 }

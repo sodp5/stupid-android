@@ -23,22 +23,19 @@ fun PostScreen(
     )
 }
 
-
 @Composable
 fun PostScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .background(Color.White),
+        modifier = modifier.background(Color.White),
     ) {
         PostTitleBar()
 
         Spacer(modifier = Modifier.height(16.dp))
 
         PostProgress(
-            modifier = Modifier
-                .padding(horizontal = 72.dp),
+            modifier = Modifier.padding(horizontal = 72.dp),
             currentStep = PostProgressStep.Second,
         )
     }
