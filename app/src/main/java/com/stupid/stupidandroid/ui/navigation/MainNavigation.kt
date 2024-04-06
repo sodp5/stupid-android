@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.stupid.stupidandroid.ui.screen.home.Choice
 
 const val mainNavigationRoute = "main_route"
 
@@ -13,13 +14,15 @@ fun NavController.navigateToMain(navOptions: NavOptions? = null) {
     this.navigate(mainNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.mainScreen() {
+fun NavGraphBuilder.mainScreen(
+    onShowEventScreen : (Choice) -> Unit,
+) {
     navigation(
         startDestination = homeNavigationRoute,
         route = mainNavigationRoute
     ) {
         postScreen()
-        homeScreen()
+        homeScreen(onShowEventScreen = onShowEventScreen)
         myPageScreen()
     }
 }
