@@ -3,6 +3,7 @@ package com.stupid.stupidandroid.data.api
 import com.stupid.stupidandroid.data.model.RemoteMyPage
 import com.stupid.stupidandroid.data.model.RemoteMyPageItem
 import com.stupid.stupidandroid.data.model.RemotePost
+import com.stupid.stupidandroid.data.model.RemoteUser
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -24,7 +25,7 @@ interface NetworkService {
     @GET(value = "/api/v1/oauth/kakao/login/app")
     suspend fun registerKakaoToken(
         @Query("token") token : String
-    ) : Response<Unit>
+    ) : Response<RemoteUser>
 
     @Multipart
     @POST(value = "/api/v1/post")
