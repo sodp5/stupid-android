@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.stupid.stupidandroid.usecase.CreatePostUseCase
 import com.stupid.stupidandroid.usecase.Post
 import com.stupid.stupidandroid.util.Event
+import com.stupid.stupidandroid.util.LoginManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,7 @@ data class PostUiStateSnapshot(
     fun toPost(): Post {
         return Post(
             title = second?.explain!!,
-            memberId = 0,
+            memberId = LoginManager.memberId.toLong(),
             contentFirst = third?.currentReason!!,
             contentSecond = fourth?.currentReason ?: fourth2?.currentReason!!
         )

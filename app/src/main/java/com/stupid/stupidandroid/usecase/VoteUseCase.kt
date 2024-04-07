@@ -1,6 +1,7 @@
 package com.stupid.stupidandroid.usecase
 
 import com.stupid.stupidandroid.data.api.NetworkService
+import com.stupid.stupidandroid.util.LoginManager
 import javax.inject.Inject
 
 class VoteUseCase @Inject constructor(
@@ -11,7 +12,7 @@ class VoteUseCase @Inject constructor(
         isAgreed: Boolean,
     ) {
         networkService.vote(
-            memberId = 1001,
+            memberId = LoginManager.memberId.toLong(),
             postId = postId,
             isAgreed = isAgreed,
         )

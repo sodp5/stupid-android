@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stupid.stupidandroid.usecase.RegisterKakaoTokenUseCase
+import com.stupid.stupidandroid.util.LoginManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,6 +27,7 @@ class LoginViewModel @Inject constructor(
                     Log.e("LoginViewModel",it.message.toString())
                 }
                 .collect {
+                    LoginManager.memberId = it.id
                     _loginSuccessEvent.emit(Unit)
                 }
         }

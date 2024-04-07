@@ -2,6 +2,7 @@ package com.stupid.stupidandroid.usecase
 
 import com.stupid.stupidandroid.data.api.NetworkService
 import com.stupid.stupidandroid.data.model.RemotePost
+import com.stupid.stupidandroid.util.LoginManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.lang.RuntimeException
@@ -19,7 +20,7 @@ class GetPostListUseCase @Inject constructor(
             val result = networkService.getPostList(
                 lastId = lastId,
                 size = size,
-                memberId = memberId
+                memberId = LoginManager.memberId.toLong()
             )
 
             if (result.isSuccessful && result.body() != null) {
